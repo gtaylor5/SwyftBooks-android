@@ -67,61 +67,62 @@ public class HomeActivity extends AppCompatActivity {
     Handler handler = new Handler(){
            @Override
         public void handleMessage(Message msg) {
-
+            
+            //set listview adapter
             resultsAdapter = new CustomListAdapter(getApplicationContext(), bookResultsArray);
             homeScreenListView.setAdapter(resultsAdapter);
             homeScreenListView.setDividerHeight(0);
-
+            
+            //show list view or not depending on previous visibility
             visibility = homeScreenListView.getVisibility();
             homeScreenListView.setVisibility(View.GONE);
             homeScreenListView.setVisibility(visibility);
-               progressBar.setVisibility(View.GONE);
+            
+            //hide progressbar
+            progressBar.setVisibility(View.GONE);
 
                if(bookResultsArray.length==0){
-
+                    
+                //check for correct ISBN length
                    if(ISBN.length() != 10 || ISBN.length() != 13){
 
                                Toast.makeText(getApplicationContext(),"Invalid ISBN number. Please make sure it is 10 or 13 digits.",Toast.LENGTH_LONG).show();
 
                    }else if(ISBN.length() == 10 || ISBN.length() == 13)
-
+                    //book couldnt be found
                    Toast.makeText(getApplicationContext(),"The book you were looking for could not be found. Please try again.",Toast.LENGTH_LONG).show();
 
                }
-
+            //set listview click listener
             homeScreenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+                //open up webpage
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                    
+                    //show progressbar while page is loading
                     progressBar.setVisibility(View.VISIBLE);
-
-                    Log.i("AppInfo", String.valueOf(position));
+                    
+                    //Load webpage
                     String link = bookResultsArray[position].retailer.deepLink;
                     Uri uri = Uri.parse(link);
+                    
+                    //client used to make sure webpage doesnt open outside app
                     internet.setWebViewClient(new WebViewClient(){
-
-
                         @Override
                         public void onPageFinished(WebView view, String url) {
                             super.onPageFinished(view, url);
-
+                            //hide progressbar once page is loaded
                             progressBar.setVisibility(View.INVISIBLE);
-
                         }
                     });
+                    //load url and set the webview visible
                     internet.loadUrl(uri.toString());
                     internet.getSettings().setJavaScriptEnabled(true);
                     internet.setVisibility(View.VISIBLE);
-                    //Intent intent = new Intent(internet, uri);
-                    //startActivity(intent);
-
                 }
 
             });
-
-
-        }
+        } //end thread handler
     };
 
 
