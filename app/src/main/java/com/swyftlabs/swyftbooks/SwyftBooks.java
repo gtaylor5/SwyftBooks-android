@@ -8,7 +8,8 @@ import com.parse.Parse;
  * Created by Gerard on 6/28/2016.
  */
 public class SwyftBooks extends Application {
-
+    
+    //used to ensure that parse is always initialized.
     @Override
     public void onCreate(){
 
