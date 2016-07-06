@@ -26,7 +26,9 @@ class CustomListAdapter extends ArrayAdapter<Book> {
         View customView = listInflater.inflate(R.layout.activity_book_profile2, parent, false);
         Typeface type = Typeface.createFromAsset(getContext().getAssets(), "fonts/RobotoSlab-Regular.ttf");
         Typeface type2 = Typeface.createFromAsset(getContext().getAssets(), "fonts/RobotoSlab-Thin.ttf");
-
+        
+        //all of this is really unncecessary. can be handled in book class.
+        //useful if i want to implement a book profile activity.
         ArrayList<Double> nonZeroPrices = new ArrayList<Double>();
         ArrayList<Double> prices = new ArrayList<Double>();
         String deepLink = getItem(position).retailer.deepLink;
@@ -51,7 +53,8 @@ class CustomListAdapter extends ArrayAdapter<Book> {
         TextView seller = (TextView)customView.findViewById(R.id.sellerTextView);
         TextView percentageSavings = (TextView)customView.findViewById(R.id.percentageView);
         ImageView retailerLogo = (ImageView) customView.findViewById(R.id.retailerLogo);
-
+        
+        //set retailer image in view.
         switch(retailer){
 
             case("ValoreBooks.com"):
@@ -77,25 +80,25 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
 
 
-
+        //format title
         title.setText(bookTitle);
-        author.setText(bookAuthor);
-        percentageSavings.setText("% "+String.format("%.2f", getItem(position).percentageSavings));
-
         title.setTypeface(type);
+        
+        //format author
+        author.setText(bookAuthor);
         String myString = "<i>" + author.getText() + "</i>";
         author.setText(Html.fromHtml(myString));
+        author.setTypeface(type);
+        
+        //format seller
         seller.setText("Seller: " + getItem(position).retailer.retailerName);
         seller.setTypeface(type2);
-        author.setTypeface(type);
+        
+        //format percentage savings
+        percentageSavings.setText("% "+String.format("%.2f", getItem(position).percentageSavings));
         percentageSavings.setTypeface(type);
 
-
-
-
-
-        return customView;
-
+        return customView; // return view.
 
     }
 
