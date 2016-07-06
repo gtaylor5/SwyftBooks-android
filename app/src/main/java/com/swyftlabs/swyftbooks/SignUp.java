@@ -30,67 +30,47 @@ public class SignUp extends AppCompatActivity{
     Button signUpButton;
     TextView backToLogin;
 
-
+    //go back to login
     public void goToLogIn(View view){
-
         startActivity(new Intent(SignUp.this, LoginActivity.class));
-
     }
 
-
+    //signUp method
     public void signUp(View view){
-
-        Log.i("AppInfo", String.valueOf(emailField.getText()));
-        Log.i("AppInfo", String.valueOf(passwordField.getText()));
 
         String email = String.valueOf(emailField.getText());
         String password = String.valueOf(passwordField.getText());
         String confirm = String.valueOf(confirmPasswordField.getText());
-
+        
+        //check if password is valid
         if(confirm.equals(password) && password != null){
-
+            //check if email is valid NEED TO CHECK FOR @ SYMBOL
             if(email != null) {
                 ParseUser newUser = new ParseUser();
                 newUser.setUsername(email);
                 newUser.setPassword(password);
-
-
+                
+                //sign user up if everything is okay
                 newUser.signUpInBackground(new SignUpCallback() {
                     @Override
                     public void done(ParseException e) {
-
                         if (e != null) {
-
                             Toast.makeText(getApplicationContext(), "Uh Oh! Something went wrong. Are you already registered?",
                                     Toast.LENGTH_LONG).show();
-
                         }else{
-
-                            Toast.makeText(getApplicationContext(),"Success!", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(SignUp.this, HomeActivity.class));
                             finish();
-
                         }
-
-
                     }
                 });
-
             }else{
-
                 Toast.makeText(getApplicationContext(), "Your email address cannot be blank.",
                         Toast.LENGTH_LONG).show();
-
             }
         }else{
-
-
             Toast.makeText(view.getContext(), "Your Passwords did not match. Please try again.",
                     Toast.LENGTH_LONG).show();
-
         }
-
-
     }
 
     @Override
