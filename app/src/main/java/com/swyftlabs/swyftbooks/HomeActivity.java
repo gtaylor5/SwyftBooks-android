@@ -198,61 +198,81 @@ public class HomeActivity extends AppCompatActivity {
                         
                         try {
                                 for (int i = 0; i < theRetailers.length; i++) {
-
+                                    //Initialize Book
                                     Book temp = new Book();
+                                    
+                                    //Set book's retailer and build the search url
                                     temp.retailer.retailerName = theRetailers[i];
-                                    Log.i("AppInfo", theRetailers[i]);
                                     temp.retailer.buildURL(ISBN);
+                                    
+                                    //Get book prices based on retailer name and url
                                     temp = getBookAttrs(temp);
+                                    
+                                    //Set book's title and author using Chegg
                                     temp.bookAuthor = getBookAttributes().bookAuthor;
                                     temp.bookTitle = getBookAttributes().bookTitle;
+                                    
+                                    //calculate percentage savings
                                     temp.setPercentageSavings();
+                                    
+                                    //add book only if there is a price. need to fix this logic
                                     if (temp.percentageSavings != 0 || temp.retailer.retailerName == "VitalSournce.com") {
                                         bookResults.add(temp);
                                     } else if(temp.retailer.retailerName == "VitalSource.com") {
 
-                                        Log.i("AppInfo",temp.retailer.retailerName);
                                         bookResults.add(temp);
 
-                                    }else {
+                                    }else {//if retailer has no prices set the book equal to null and garbage collect.
                                             temp = null;
                                             System.gc();
                                         }
                                     }
-                        } catch (Exception e) {
+                        } catch (Exception e) { // catch exception if occurs
                             e.printStackTrace();
                         }
+                        
+                        //delete excess elements in arraylist
                         bookResults.trimToSize();
+                        
+                        //sort arraylist based on percentage savings (highest to lowest)
                         Collections.sort(bookResults, new Comparator<Book>() {
                             @Override
                             public int compare(Book lhs, Book rhs) {
                                 return (int)Math.floor(rhs.percentageSavings - lhs.percentageSavings);
                             }
                         });
-
+                        
+                        //set BookResultsArray
                         bookResultsArray = new Book[bookResults.size()];
                         bookResultsArray = bookResults.toArray(bookResultsArray);
-
+                        
+                        //clear arrayList and garbage collect
                         bookResults.clear();
                         System.gc();
                     }else{
                         System.out.println("Error");
                     }
                 }
-                handler.sendEmptyMessage(0);
+                
+                handler.sendEmptyMessage(0); //handler for information in thread
 
             }
         };
-                Thread getResults = new Thread(r);
-                getResults.start();
+        //start thread
+          Thread getResults = new Thread(r);
+            getResults.start();
 
     }
-
+    
+    //method to hide keyboard    
     public static void hideSoftKeyboard(HomeActivity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
-
+    
+    //Everything below this comment should be its own class:
+    
+    //use chegg to get title and author of book
     public Book getBookAttributes() throws Exception {
 
         Book tempBook = new Book("Chegg.com");
@@ -283,26 +303,29 @@ public class HomeActivity extends AppCompatActivity {
         return tempBook;
 
     }
+    
+    //get book attributes generalized across all retailers
 
     public Book getBookAttrs(Book theBook) throws Exception {
-
+        
+        //Special statement for commission junction retailers
         if(theBook.retailer.retailerName == "VitalSource.com"){
 
             theBook.retailer.XMLFile = new CommissionJunctionClientUsage().getBookInfo(theBook.retailer.urlToSearchForBook);
-            Log.i("AppInfo",theBook.retailer.XMLFile);
-
-        }else {
+            
+        }else { //all other retailers
 
             theBook.retailer.XMLFile = new DownloadWebpageTask().execute(theBook.retailer.urlToSearchForBook).get();
 
         }
-
+        
+        //build xml document for parsing
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         InputSource input = new InputSource();
         input.setCharacterStream(new StringReader(theBook.retailer.XMLFile));
-
         Document xmlDoc = builder.parse(input);
-
+        
+        //parse specifically based on retailer xml layout
         if (theBook.retailer.retailerName == "ValoreBooks.com") {
 
             NodeList rental = xmlDoc.getElementsByTagName("rental-offer");
@@ -418,11 +441,10 @@ public class HomeActivity extends AppCompatActivity {
             theBook.usedPrice = getElement(info, "price")[0];
 
         }
-
+        
+        // return book with attributes
         return theBook;
-
-
-    }
+    } //end method
 
 
 
@@ -514,7 +536,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-}
+}//end class
 
 
 
