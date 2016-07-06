@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">SwyftBooks</string>
+    <string name="parse_app_id">VRhTx2xu0CA8OBFOJVVCAMIsOUvu0ptAJALbdtBi</string>
+    <string name="parse_client_key">CYk2jvgE5n4heZMrlnvJhrdCy6kT1m68M4JZri8C</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_side_bar">SideBar</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="facebook_app_id">1529331660697092</string>
+    <string name="com_facebook_loginview_log_in_button_long">Connect</string>
+    <string name="com_facebook_loginview_log_in_button">Connect</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- The main content view -->
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/swyftbooksackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|center_vertical"
+            android:clickable="false"
+            android:id="@+id/homeBG">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:id="@+id/searchBarEditText"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/searchbaredittext"
+                android:hint="Enter ISBN (No Dashes)"
+                android:textColorHint="#45305b"
+                android:paddingLeft="60dp"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:numeric="integer"
+                android:inputType="number"
+                android:selectAllOnFocus="true"
+                android:imeOptions="actionSearch"
+                android:textColor="#45305b"
+                android:layout_marginTop="56dp"
+                android:elevation="10dp"
+                />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchButton"
+                android:layout_alignTop="@+id/searchBarEditText"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/searchicon"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="14dp"
+                android:nestedScrollingEnabled="false"
+                android:clickable="true"
+                android:onClick="myClickHandler"
+                android:background="@null"
+                android:elevation="15dp"/>
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/resultsListView"
+                android:layout_below="@+id/searchBarEditText"
+                android:layout_centerHorizontal="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:foreground="?android:selectableItemBackground"
+                android:fastScrollEnabled="false"
+                android:choiceMode="singleChoice" />
+
+            <WebView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bookBrowser"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:layout_alignTop="@+id/resultsListView"
+                android:layout_alignBottom="@+id/resultsListView"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="56dp">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="56dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="SwyftBooks"
+                    android:id="@+id/logo"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="#ffffffff"
+                    android:textSize="35sp" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+            android:layout_centerInParent="true"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:progress = "0"
+            />
+
+    </FrameLayout>
+    <!-- The navigation drawer -->
+</android.support.v4.widget.DrawerLayout>

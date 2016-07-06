@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/listviewbackground"
+    android:clickable="false"
+    android:dividerPadding="5dp"
+    android:gravity="center">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ffffffff"
+        android:clickable="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:paddingBottom="5dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/rowItem"
+        android:descendantFocusability="blocksDescendants">
+
+        <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/resultImageView"
+        android:layout_margin="17.5dp"
+        android:src="@drawable/amznlogo"
+        android:layout_gravity="center"
+            android:clickable="false" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+        android:layout_margin="10dp">
+
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:id="@+id/titleTextView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:hint="Author"
+        android:layout_alignParentLeft="true"
+        android:textColor="#281d37"
+        android:textSize="15sp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Author"
+        android:id="@+id/customRow"
+        android:layout_below="@+id/titleTextView"
+        android:layout_alignParentStart="true"
+        android:layout_margin="5dp"
+        android:layout_alignParentLeft="true"
+        android:textColor="#281d37"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price (Retail): "
+        android:id="@+id/newPriceTextView"
+        android:layout_below="@+id/customRow"
+        android:layout_alignParentStart="true"
+        android:layout_margin="5dp"
+        android:layout_alignParentLeft="true"
+        android:textColor="#281d37"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price (Used): "
+        android:id="@+id/usedPriceTextview"
+        android:layout_below="@+id/newPriceTextView"
+        android:layout_alignParentStart="true"
+        android:layout_margin="5dp"
+        android:layout_alignParentLeft="true"
+        android:textColor="#281d37"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/priceView1"
+        android:layout_alignBottom="@+id/newPriceTextView"
+        android:layout_alignTop="@+id/newPriceTextView"
+        android:layout_toRightOf="@+id/newPriceTextView"
+        android:textColor="#281d37"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/priceView2"
+        android:layout_alignTop="@+id/usedPriceTextview"
+        android:layout_toEndOf="@+id/usedPriceTextview"
+        android:layout_toRightOf="@+id/usedPriceTextview"
+        android:layout_alignBottom="@+id/usedPriceTextview"
+        android:layout_alignLeft="@+id/priceView1"
+        android:textColor="#281d37"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price (Rent): "
+        android:id="@+id/rentPriceTextView"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/usedPriceTextview"
+        android:layout_alignParentLeft="true"
+        android:textColor="#281d37"
+        android:textSize="15sp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/priceView3"
+        android:layout_alignParentBottom="false"
+        android:layout_toEndOf="@+id/rentPriceTextView"
+        android:layout_alignTop="@+id/rentPriceTextView"
+        android:layout_alignBottom="@+id/rentPriceTextView"
+        android:layout_toRightOf="@+id/rentPriceTextView"
+        android:layout_alignLeft="@+id/priceView2"
+        android:textColor="#281d37"
+        android:textSize="15sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

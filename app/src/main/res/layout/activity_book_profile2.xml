@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:background="#aaa9ab"
+    android:clickable="false">
+
+    <!-- A CardView that contains a TextView -->
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardUseCompatPadding="true"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="2dp"
+        android:background="@null"
+        card_view:cardPreventCornerOverlap="false"
+        android:elevation="2dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/customRow"
+            android:background="#f1f1f2"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            >
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/retailerLogo"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/amznlogo"
+                android:layout_alignParentBottom="false"
+                android:layout_alignTop="@+id/titleViewNormal"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_alignBottom="@+id/estimatedSavings" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:id="@+id/titleViewNormal"
+                android:layout_toEndOf="@+id/retailerLogo"
+                android:textSize="15sp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentTop="true"
+                android:textColor="#bcbabe"
+                android:fontFamily="sans-serif"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Author"
+                android:id="@+id/authorTextView"
+                android:layout_alignLeft="@+id/titleViewNormal"
+                android:layout_below="@+id/titleViewNormal"
+                android:textSize="15sp"
+                android:layout_alignParentTop="false"
+                android:textColor="#bcbabe"
+                android:textStyle="italic"
+                android:fontFamily="sans-serif"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seller"
+                android:id="@+id/sellerTextView"
+                android:layout_below="@+id/authorTextView"
+                android:layout_alignStart="@+id/authorTextView"
+                android:layout_marginTop="5dp"
+                android:textColor="#bcbabe"
+                android:textSize="10sp"
+                android:fontFamily="sans-serif"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Percentage Savings"
+                android:id="@+id/estimatedSavings"
+                android:textSize="15sp"
+                android:textColor="#bcbabe"
+                android:textStyle="italic"
+                android:layout_below="@+id/sellerTextView"
+                android:layout_toEndOf="@+id/retailerLogo"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="sans-serif"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%"
+                android:id="@+id/percentageView"
+                android:layout_alignTop="@+id/estimatedSavings"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="false"
+                android:layout_marginRight="15dp"
+                android:textColor="#bcbabe"
+                android:textSize="15sp"
+                android:textStyle="normal"
+                android:fontFamily="sans-serif" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+</LinearLayout>
