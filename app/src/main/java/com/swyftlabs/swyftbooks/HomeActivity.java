@@ -129,21 +129,33 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
+        
+        //Font used for isbnEditText and appName
         Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Regular.ttf");
+        
+        //KeyBoard is always hidden
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
+        
+        //Link variables to assets in UI
         bg = (RelativeLayout)findViewById(R.id.homeBG);
         internet = (WebView)findViewById(R.id.bookBrowser);
         appName = (TextView)findViewById(R.id.logo);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         isbnText = (EditText) findViewById(R.id.searchBarEditText);
+        homeSCreenListView = (ListView)findViewById(R.id.resultsListView);
+        
+        //Italicize Swyft in SwyftBooks
         String myString = "<i>" + "Swyft" + "</i>" + "Books";
         appName.setText(Html.fromHtml(myString));
+        
+        //Set Typeface for appName and isbnText
         appName.setTypeface(type2);
         isbnText.setTypeface(type2);
-        homeScreenListView = (ListView) findViewById(R.id.resultsListView);
+        
+        //set progressbar to invisible
         progressBar.setVisibility(View.INVISIBLE);
+        
+        //Set Action Listener for Search Icon in searchBar OR Search Icon on keyboard
         isbnText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -154,6 +166,7 @@ public class HomeActivity extends AppCompatActivity {
                     bookResultsArray = null;
 
                     myClickHandler(getCurrentFocus());
+                    
                     return true;
                 }
                 return false;
@@ -162,23 +175,27 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-
+    //Main method for work done.
     public void myClickHandler(View view) {
-        progressBar.setVisibility(view.VISIBLE);
-        hideSoftKeyboard(this);
+        progressBar.setVisibility(view.VISIBLE); //Show progressBar
+        hideSoftKeyboard(this); //Hide keyboard
+        //Start new thread
         Runnable r = new Runnable() {
             @Override
             public void run() {
+                //set ISBN and remove dashes if any
                 ISBN = String.valueOf(isbnText.getText());
                 ISBN.replaceAll("-", "");
 
                 synchronized (this) {
+                    //check for internet connection
                     ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-
-
                     if (networkInfo != null && networkInfo.isConnected()) {
+                        
+                        //Search for Books.
+                        
                         try {
                                 for (int i = 0; i < theRetailers.length; i++) {
 
