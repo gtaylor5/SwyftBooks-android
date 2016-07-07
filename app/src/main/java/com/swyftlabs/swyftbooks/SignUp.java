@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -45,7 +46,7 @@ public class SignUp extends AppCompatActivity{
         //check if password is valid
         if(confirm.equals(password) && password != null){
             //check if email is valid NEED TO CHECK FOR @ SYMBOL
-            if(email != null) {
+            if(email != null && email.contains("@")) {
                 ParseUser newUser = new ParseUser();
                 newUser.setUsername(email);
                 newUser.setPassword(password);
@@ -64,8 +65,16 @@ public class SignUp extends AppCompatActivity{
                     }
                 });
             }else{
-                Toast.makeText(getApplicationContext(), "Your email address cannot be blank.",
-                        Toast.LENGTH_LONG).show();
+
+                if(email == null) {
+                    Toast.makeText(getApplicationContext(), "Your email address cannot be blank.",
+                            Toast.LENGTH_LONG).show();
+                }else{
+
+                    Toast.makeText(getApplicationContext(), "The email address you entered is not valid.",
+                            Toast.LENGTH_LONG).show();
+
+                }
             }
         }else{
             Toast.makeText(view.getContext(), "Your Passwords did not match. Please try again.",
@@ -78,6 +87,7 @@ public class SignUp extends AppCompatActivity{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         TextView appName;
         appName = (TextView)findViewById(R.id.AppNameTextView);

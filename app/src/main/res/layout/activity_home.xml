@@ -71,14 +71,21 @@
                 android:id="@+id/bookBrowser"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:layout_alignTop="@+id/resultsListView"
-                android:layout_alignBottom="@+id/resultsListView"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:layout_alignParentBottom="true"
+                android:background="@null"
+                android:layout_below="@+id/exitWebView" />
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="56dp">
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="56dp"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/inapplogo" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -88,7 +95,31 @@
                     android:id="@+id/logo"
                     android:gravity="center_vertical|center_horizontal"
                     android:textColor="#ffffffff"
-                    android:textSize="35sp" />
+                    android:textSize="35sp"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_alignTop="@+id/resultsListView"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/exitWebView"
+                android:visibility="invisible"
+                android:background="#735290"
+                android:elevation="10dp">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:id="@+id/exitWebViewButton"
+                    android:textColor="#ffffffff"
+                    android:layout_margin="5dp"
+                    android:background="@null"
+                    android:onClick="exitWebView" />
             </LinearLayout>
 
 

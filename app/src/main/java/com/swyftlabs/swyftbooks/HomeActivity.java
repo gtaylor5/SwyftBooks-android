@@ -19,7 +19,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -61,6 +63,8 @@ public class HomeActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     RelativeLayout bg;
     WebView internet;
+    LinearLayout webBar;
+    Button exitWeb;
 
 
 
@@ -98,10 +102,11 @@ public class HomeActivity extends AppCompatActivity {
                 //open up webpage
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    
+
                     //show progressbar while page is loading
+
                     progressBar.setVisibility(View.VISIBLE);
-                    
+                    webBar.setVisibility(View.VISIBLE);
                     //Load webpage
                     String link = bookResultsArray[position].retailer.deepLink;
                     Uri uri = Uri.parse(link);
@@ -119,11 +124,22 @@ public class HomeActivity extends AppCompatActivity {
                     internet.loadUrl(uri.toString());
                     internet.getSettings().setJavaScriptEnabled(true);
                     internet.setVisibility(View.VISIBLE);
+
                 }
 
             });
         } //end thread handler
     };
+
+    public void exitWebView(View view){
+
+        internet.setVisibility(View.INVISIBLE);
+        webBar.setVisibility(View.INVISIBLE);
+        internet.clearCache(true);
+        internet.clearHistory();
+        internet.loadUrl("about:blank");
+
+    }
 
 
     @Override
@@ -143,15 +159,18 @@ public class HomeActivity extends AppCompatActivity {
         appName = (TextView)findViewById(R.id.logo);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         isbnText = (EditText) findViewById(R.id.searchBarEditText);
-        homeSCreenListView = (ListView)findViewById(R.id.resultsListView);
+        homeScreenListView = (ListView)findViewById(R.id.resultsListView);
+        webBar = (LinearLayout)findViewById(R.id.exitWebView);
+        exitWeb = (Button)findViewById(R.id.exitWebViewButton);
         
         //Italicize Swyft in SwyftBooks
         String myString = "<i>" + "Swyft" + "</i>" + "Books";
         appName.setText(Html.fromHtml(myString));
         
-        //Set Typeface for appName and isbnText
+        //Set Typeface for appName and isbnText and exitweb
         appName.setTypeface(type2);
         isbnText.setTypeface(type2);
+        exitWeb.setTypeface(type2);
         
         //set progressbar to invisible
         progressBar.setVisibility(View.INVISIBLE);

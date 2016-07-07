@@ -27,7 +27,8 @@
                 android:layout_above="@+id/EmailEditText"
                 android:layout_alignParentTop="false"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true" />
+                android:layout_alignParentRight="true"
+                android:visibility="visible" />
 
             <EditText
                         android:layout_width="match_parent"

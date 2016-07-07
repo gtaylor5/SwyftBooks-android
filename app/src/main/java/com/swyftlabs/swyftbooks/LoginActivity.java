@@ -63,6 +63,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         //typefaces
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
@@ -87,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         forgotPassword.setTypeface(type);
         passwordField.setTypeface(type);
         loginButton.setTypeface(type);
-        createAccount.setTypeface(type)
+        createAccount.setTypeface(type);
         skip.setTypeface(type);
         
         //set transparency for textfields and button
