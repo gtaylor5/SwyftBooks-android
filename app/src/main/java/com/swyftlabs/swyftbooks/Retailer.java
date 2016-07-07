@@ -49,6 +49,15 @@ public class Retailer implements Serializable {
 			case("VitalSource.com"):
 				this.urlToSearchForBook = "/v2/product-search?website-id=8044180&advertiser-ids=2544507&isbn="+ISBN;
 				return;
+			case("AbeBooks.com"):
+				this.urlToSearchForBook = "http://search2.abebooks.com/search?isbn="+ISBN+"&clientkey=(INSERT CLIENT KEY)";
+				return;
+			case("CengageBrain.com"):
+				this.urlToSearchForBook = "/v2/product-search?website-id=8044180&advertiser-ids=1845757&isbn="+ISBN;
+				return;
+			case("TextBookUnderGround.com"):
+				this.urlToSearchForBook = "/v2/product-serach?website-id=8044180&advertiser-ids=4170143&isbn="+ISBN;
+				return;
 		}
 	}
 	
