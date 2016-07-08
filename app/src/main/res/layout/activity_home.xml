@@ -18,6 +18,45 @@
             android:clickable="false"
             android:id="@+id/homeBG">
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/exitWebView"
+                android:visibility="invisible"
+                android:background="#735290"
+                android:elevation="15dp"
+                android:layout_below="@+id/searchBarEditText">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:id="@+id/exitWebViewButton"
+                    android:textColor="#ffffffff"
+                    android:background="@null"
+                    android:onClick="exitWebView"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:elevation="15dp"/>
+            </LinearLayout>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchButton"
+                android:layout_alignTop="@+id/searchBarEditText"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/searchicon"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="14dp"
+                android:nestedScrollingEnabled="false"
+                android:clickable="true"
+                android:onClick="myClickHandler"
+                android:background="@null"
+                android:elevation="12.5dp"/>
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -37,21 +76,6 @@
                 android:layout_marginTop="56dp"
                 android:elevation="10dp"
                 />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/searchButton"
-                android:layout_alignTop="@+id/searchBarEditText"
-                android:layout_alignParentStart="true"
-                android:src="@drawable/searchicon"
-                android:layout_marginTop="14dp"
-                android:layout_marginLeft="14dp"
-                android:nestedScrollingEnabled="false"
-                android:clickable="true"
-                android:onClick="myClickHandler"
-                android:background="@null"
-                android:elevation="15dp"/>
 
             <ListView
                 android:layout_width="wrap_content"
@@ -87,39 +111,6 @@
                     android:id="@+id/imageView"
                     android:src="@drawable/inapplogo" />
 
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="56dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="SwyftBooks"
-                    android:id="@+id/logo"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:textColor="#ffffffff"
-                    android:textSize="35sp"
-                    android:visibility="invisible" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_alignTop="@+id/resultsListView"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/exitWebView"
-                android:visibility="invisible"
-                android:background="#735290"
-                android:elevation="10dp">
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Back"
-                    android:id="@+id/exitWebViewButton"
-                    android:textColor="#ffffffff"
-                    android:layout_margin="5dp"
-                    android:background="@null"
-                    android:onClick="exitWebView" />
             </LinearLayout>
 
 

@@ -87,12 +87,11 @@ public class SignUp extends AppCompatActivity{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         TextView appName;
         appName = (TextView)findViewById(R.id.AppNameTextView);
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
-        Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Regular.ttf");
+        Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/Pacifico.tff");
 
 
         String myString = "<i>" + "Swyft" + "</i>" + "Books";

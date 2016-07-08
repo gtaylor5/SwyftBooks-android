@@ -1,14 +1,11 @@
 package com.swyftlabs.swyftbooks;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -65,9 +62,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        ParseUser currentUser = ParseUser.getCurrentUser();
+
+        if(currentUser != null){
+
+            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+            Log.i("AppInfo", currentUser.getUsername());
+            finish();
+
+        }
+
         //typefaces
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
-        Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Regular.ttf");
+        Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/Pacifico.ttf");
         
         //link variables and attributes
         appName = (TextView)findViewById(R.id.AppNameTextView);
@@ -79,8 +86,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         skip = (TextView)findViewById(R.id.skipTextView);
         
         //italicize swyft in swyftbooks and set typeface
-        String myString = "<i>" + "Swyft" + "</i>" + "Books";
-        appName.setText(Html.fromHtml(myString));
         appName.setTypeface(type2);
         
         //set Typefaces 
