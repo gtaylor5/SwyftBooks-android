@@ -52,7 +52,7 @@ import java.lang.Runtime.*;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private String[] theRetailers = {"BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "VitalSource.com"};
+    private String[] theRetailers = {"BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "VitalSource.com","AbeBooks.com"};
     int visibility;
     ListAdapter resultsAdapter;
     Book[] bookResultsArray;
@@ -460,6 +460,15 @@ public class HomeActivity extends AppCompatActivity {
             theBook.retailer.deepLink = url.item(0).getTextContent();
             theBook.usedPrice = getElement(info, "price")[0];
 
+        }else if(theBook.retailer.retailerName == "AbeBooks.com"){
+            
+            MpdeList results = xmlDoc.getElementsByTagName("searchResults");
+            NodeList bookAttrrs = getElementsByTagName("Book");
+            
+            theBook.newPrice = getElement(bookAttrs, "listingPrice");
+            theBook.retailer.deepLink = getElement(bookAttrs, "listingUrl");
+            
+            
         }
         
         // return book with attributes
