@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
@@ -31,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
 import android.os.Message;
+
+import com.parse.ParseUser;
 
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
@@ -64,8 +67,6 @@ public class HomeActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     RelativeLayout bg;
     WebView internet;
-    LinearLayout webBar;
-    ImageButton exitWeb;
 
 
 
@@ -107,22 +108,22 @@ public class HomeActivity extends AppCompatActivity {
                     //show progressbar while page is loading
 
                     progressBar.setVisibility(View.VISIBLE);
-                    webBar.setVisibility(View.VISIBLE);
-                    exitWeb.setBackgroundResource(R.drawable.windowclose);
                     //Load webpage
                     String link = bookResultsArray[position].retailer.deepLink;
                     Uri uri = Uri.parse(link);
-                    
                     //client used to make sure webpage doesnt open outside app
                     internet.setWebViewClient(new WebViewClient(){
+
                         @Override
                         public void onPageFinished(WebView view, String url) {
                             super.onPageFinished(view, url);
                             //hide progressbar once page is loaded
                             progressBar.setVisibility(View.INVISIBLE);
-
                         }
+
+
                     });
+
                     //load url and set the webview visible
                     internet.loadUrl(uri.toString());
                     internet.getSettings().setJavaScriptEnabled(true);
@@ -133,17 +134,31 @@ public class HomeActivity extends AppCompatActivity {
         } //end thread handler
     };
 
-    public void exitWebView(View view){
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        isbnText.setVisibility(View.VISIBLE);
-        internet.setVisibility(View.INVISIBLE);
-        webBar.setVisibility(View.INVISIBLE);
-        internet.clearCache(true);
-        internet.clearHistory();
-        internet.loadUrl("about:blank");
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+
+            isbnText.setVisibility(View.VISIBLE);
+            internet.setVisibility(View.INVISIBLE);
+            internet.clearCache(true);
+            internet.clearHistory();
+            internet.loadUrl("about:blank");
+            return false;
+
+        }
+
+        return super.onKeyDown(keyCode,event);
 
     }
 
+    public void logOut(View view){
+
+        ParseUser user = ParseUser.getCurrentUser();
+        user.logOut();
+        startActivity(new Intent(HomeActivity.this,LoginActivity.class));
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +167,7 @@ public class HomeActivity extends AppCompatActivity {
         
         //Font used for isbnEditText and appName
         Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Regular.ttf");
-        
+        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
         //KeyBoard is always hidden
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         
@@ -163,13 +178,12 @@ public class HomeActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         isbnText = (EditText) findViewById(R.id.searchBarEditText);
         homeScreenListView = (ListView)findViewById(R.id.resultsListView);
-        webBar = (LinearLayout)findViewById(R.id.exitWebView);
-        exitWeb = (ImageButton)findViewById(R.id.exitWebViewButton);
-        
+        TextView logOutTextView = (TextView)findViewById(R.id.logOut);
 
         //Set Typeface for appName and isbnText and
 
         isbnText.setTypeface(type2);
+        logOutTextView.setTypeface(type);
 
         
         //set progressbar to invisible

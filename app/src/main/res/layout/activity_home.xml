@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
     <!-- The main content view -->
-    <FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/swyftbooksackground">
+<FrameLayout android:id="@+id/content_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/swyftbooksackground"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -18,29 +14,17 @@
             android:clickable="false"
             android:id="@+id/homeBG">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/resultsListView"
+                android:layout_below="@+id/searchBarEditText"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/exitWebView"
-                android:visibility="invisible"
-                android:background="#735290"
-                android:elevation="15dp"
-                android:layout_below="@+id/searchBarEditText">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Back"
-                    android:id="@+id/exitWebViewButton"
-                    android:textColor="#ffffffff"
-                    android:background="@null"
-                    android:onClick="exitWebView"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="15dp"
-                    android:elevation="15dp"/>
-            </LinearLayout>
+                android:clickable="false"
+                android:focusable="false"
+                android:foreground="?android:selectableItemBackground"
+                android:fastScrollEnabled="false"
+                android:choiceMode="singleChoice" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -77,18 +61,6 @@
                 android:elevation="10dp"
                 />
 
-            <ListView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/resultsListView"
-                android:layout_below="@+id/searchBarEditText"
-                android:layout_centerHorizontal="true"
-                android:clickable="false"
-                android:focusable="false"
-                android:foreground="?android:selectableItemBackground"
-                android:fastScrollEnabled="false"
-                android:choiceMode="singleChoice" />
-
             <WebView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -98,22 +70,35 @@
                 android:visibility="invisible"
                 android:layout_alignParentBottom="true"
                 android:background="@null"
-                android:layout_below="@+id/exitWebView" />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="56dp">
-
-                <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="56dp"
-                    android:id="@+id/imageView"
-                    android:src="@drawable/inapplogo" />
-
-            </LinearLayout>
+                android:layout_below="@+id/searchBarEditText"
+                />
 
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="56dp"
+                android:id="@+id/imageView"
+                android:src="@drawable/inapplogo"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Logout"
+                android:id="@+id/logOut"
+                android:textColor="#ffffffff"
+                android:clickable="true"
+                android:onClick="logOut"
+                android:textSize="15sp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp" />
         </RelativeLayout>
 
         <ProgressBar
@@ -129,4 +114,4 @@
 
     </FrameLayout>
     <!-- The navigation drawer -->
-</android.support.v4.widget.DrawerLayout>
+
