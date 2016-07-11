@@ -36,7 +36,8 @@
         android:layout_alignParentStart="true"
         android:layout_above="@+id/SignUpPasswordEditText"
         android:layout_marginBottom="10dp"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textSize="15sp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -52,7 +53,8 @@
         android:background="@drawable/customedittext"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/SignUpConfirmPasswordEditText"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -68,7 +70,8 @@
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/SignUpButton"
         android:layout_marginBottom="50dp"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textSize="15sp" />
 
     <Button
         android:layout_width="match_parent"
@@ -82,7 +85,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textSize="15sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -93,6 +97,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:textColor="#ffffffff"
-        android:onClick="goToLogIn" />
+        android:onClick="goToLogIn"
+        android:textSize="15sp" />
 
 </RelativeLayout>

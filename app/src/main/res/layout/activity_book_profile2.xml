@@ -58,7 +58,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_alignParentTop="true"
-                android:textColor="#bcbabe"
+                android:textColor="#626164"
                 android:fontFamily="sans-serif"/>
 
             <TextView
@@ -70,7 +70,7 @@
                 android:layout_below="@+id/titleViewNormal"
                 android:textSize="15sp"
                 android:layout_alignParentTop="false"
-                android:textColor="#bcbabe"
+                android:textColor="#626164"
                 android:textStyle="italic"
                 android:fontFamily="sans-serif"/>
 
@@ -89,10 +89,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Percentage Savings"
+                android:text="Lowest Price Available"
                 android:id="@+id/estimatedSavings"
                 android:textSize="15sp"
-                android:textColor="#bcbabe"
+                android:textColor="#626164"
                 android:textStyle="italic"
                 android:layout_below="@+id/sellerTextView"
                 android:layout_toEndOf="@+id/retailerLogo"
@@ -109,10 +109,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="false"
                 android:layout_marginRight="15dp"
-                android:textColor="#bcbabe"
                 android:textSize="15sp"
                 android:textStyle="normal"
-                android:fontFamily="sans-serif" />
+                android:fontFamily="sans-serif"
+                android:textColor="#626164" />
 
         </RelativeLayout>
 

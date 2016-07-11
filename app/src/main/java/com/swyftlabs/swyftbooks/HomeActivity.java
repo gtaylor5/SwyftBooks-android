@@ -55,7 +55,7 @@ import java.lang.Runtime.*;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private String[] theRetailers = {"BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "VitalSource.com","AbeBooks.com"};
+    private String[] theRetailers = {"BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "VitalSource.com","AbeBooks.com", "CengageBrain.com", "TextBookUnderGround.com"};
     int visibility;
     ListAdapter resultsAdapter;
     Book[] bookResultsArray;
@@ -110,6 +110,7 @@ public class HomeActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     //Load webpage
                     String link = bookResultsArray[position].retailer.deepLink;
+                    Log.i("AppInfo", link);
                     Uri uri = Uri.parse(link);
                     //client used to make sure webpage doesnt open outside app
                     internet.setWebViewClient(new WebViewClient(){
@@ -250,7 +251,7 @@ public class HomeActivity extends AppCompatActivity {
                                     temp.setPercentageSavings();
                                     
                                     //add book only if there is a price. need to fix this logic
-                                    if (temp.percentageSavings != 0 || temp.retailer.retailerName == "VitalSournce.com") {
+                                    if (temp.percentageSavings != -1 || temp.retailer.retailerName == "VitalSournce.com") {
                                         bookResults.add(temp);
                                     } else if(temp.retailer.retailerName == "VitalSource.com") {
 
@@ -268,11 +269,11 @@ public class HomeActivity extends AppCompatActivity {
                         //delete excess elements in arraylist
                         bookResults.trimToSize();
                         
-                        //sort arraylist based on percentage savings (highest to lowest)
+                        //sort arraylist based on lowest price(highest to lowest)
                         Collections.sort(bookResults, new Comparator<Book>() {
                             @Override
                             public int compare(Book lhs, Book rhs) {
-                                return (int)Math.floor(rhs.percentageSavings - lhs.percentageSavings);
+                                return (int)Math.floor(lhs.lowestPrice - rhs.lowestPrice);
                             }
                         });
                         
@@ -343,13 +344,15 @@ public class HomeActivity extends AppCompatActivity {
     public Book getBookAttrs(Book theBook) throws Exception {
         
         //Special statement for commission junction retailers
-        if(theBook.retailer.retailerName == "VitalSource.com"){
+        if(theBook.retailer.retailerName == "VitalSource.com" || theBook.retailer.retailerName == "TextBookUnderGround.com"){
 
             theBook.retailer.XMLFile = new CommissionJunctionClientUsage().getBookInfo(theBook.retailer.urlToSearchForBook);
+            Log.i("AppInfo", theBook.retailer.XMLFile);
             
         }else { //all other retailers
 
             theBook.retailer.XMLFile = new DownloadWebpageTask().execute(theBook.retailer.urlToSearchForBook).get();
+            Log.i("AppInfo", theBook.retailer.XMLFile);
 
         }
         
@@ -389,62 +392,42 @@ public class HomeActivity extends AppCompatActivity {
 
             }
 
-
             NodeList titleInfo = xmlDoc.getElementsByTagName("BookInfo");
-
             NodeList rentPrice = xmlDoc.getElementsByTagName("Price");
             String price = rentPrice.item(0).getTextContent();
-
             theBook.listPrice = getElement(titleInfo, "ListPrice")[0];
             theBook.rentPrice_semester = Double.parseDouble(price);
             NodeList pids = xmlDoc.getElementsByTagName("Pid");
             theBook.cheggPID = pids.item(0).getTextContent();
             theBook.retailer.setCheggDeepLink(theBook.cheggPID);
-            Log.i("AppInfo", theBook.retailer.deepLink);
-
 
         } else if (theBook.retailer.retailerName == "BookRenter.com") {
-
             NodeList error = xmlDoc.getElementsByTagName("error");
             if (error.getLength() != 0) {
-
                 return null;
-
             } else {
-
                 NodeList availability = xmlDoc.getElementsByTagName("availability");
                 Log.i("AppInfo", availability.item(0).getTextContent());
                 if(availability.getLength()!= 0) {
                     NodeList prices = xmlDoc.getElementsByTagName("rental_price");
                     for (int i = 0; i < prices.getLength(); i++) {
-
                         if (i == 0) {
-
                             String stuff = prices.item(i).getTextContent();
                             stuff = stuff.replaceAll("\\$", "");
                             theBook.rentPrice_fall = Double.parseDouble(stuff);
-
                         } else if (i == 1) {
-
                             String stuff = prices.item(i).getTextContent();
                             stuff = stuff.replaceAll("\\$", "");
                             theBook.rentPrice_spring = Double.parseDouble(stuff);
-
                         }
-
                         String stuff = prices.item(i).getTextContent();
                         stuff = stuff.replaceAll("\\$", "");
                         theBook.rentPrice_summer = Double.parseDouble(stuff);
-
                     }
-
                     NodeList url = xmlDoc.getElementsByTagName("book_url");
                     theBook.retailer.deepLink = url.item(0).getTextContent();
-
-                    Log.i("AppInfo", theBook.retailer.deepLink);
                 }else{
 
-                    Log.i("AppInfo", "This might be the problem");
                     return null;
 
                 }
@@ -465,8 +448,6 @@ public class HomeActivity extends AppCompatActivity {
             theBook.rentPrice_90 = getElement(listPrice, "Rental2Price")[0];
             theBook.rentPrice_46 = getElement(listPrice, "Rental3Price")[0];
 
-            NodeList eBookPrice = xmlDoc.getElementsByTagName("eBookPrice");
-
         }else if(theBook.retailer.retailerName == "VitalSource.com"){
 
             NodeList info = xmlDoc.getElementsByTagName("product");
@@ -475,14 +456,18 @@ public class HomeActivity extends AppCompatActivity {
             theBook.usedPrice = getElement(info, "price")[0];
 
         }else if(theBook.retailer.retailerName == "AbeBooks.com"){
-            
-            MpdeList results = xmlDoc.getElementsByTagName("searchResults");
-            NodeList bookAttrrs = getElementsByTagName("Book");
-            
-            theBook.newPrice = getElement(bookAttrs, "listingPrice");
-            theBook.retailer.deepLink = getElement(bookAttrs, "listingUrl");
-            
-            
+
+            NodeList bookAttrs = xmlDoc.getElementsByTagName("Book");
+            theBook.newPrice = getElement(bookAttrs, "listingPrice")[0];
+            theBook.retailer.deepLink = "http://"+getElementGenInfo(bookAttrs,"listingUrl");
+        }else if(theBook.retailer.retailerName == "TextBookUnderGround.com"){
+
+            Log.i("AppInfo", theBook.retailer.XMLFile);
+
+        }else if(theBook.retailer.retailerName == "CengageBrain.com"){
+
+            Log.i("AppInfo", theBook.retailer.XMLFile);
+
         }
         
         // return book with attributes

@@ -51,6 +51,7 @@ public class Book implements Serializable {
     double rentPrice_46 = 0.0;
 
     double percentageSavings = -1.0;
+    double lowestPrice = 0.0;
     
     Retailer retailer = new Retailer();
 
@@ -102,6 +103,7 @@ public class Book implements Serializable {
         
         //calculate percentage savings and clear arraylists
         percentageSavings = Math.abs((max-min)/max)*100;
+        lowestPrice = min;
         nonZeroPrices.clear();
         prices.clear();
     }

@@ -45,6 +45,7 @@ class CustomListAdapter extends ArrayAdapter<Book> {
         double usedPrice = getItem(position).usedPrice;
         double marketPrice = getItem(position).marketPlacePrice;
         double listPrice = getItem(position).listPrice;
+        double lowestPrice = getItem(position).lowestPrice;
 
         String retailer = String.valueOf(getItem(position).retailer.retailerName);
         final String purchaseURL = String.valueOf(getItem(position).retailer.deepLink);
@@ -74,7 +75,16 @@ class CustomListAdapter extends ArrayAdapter<Book> {
                 break;
             case("VitalSource.com"):
                 retailerLogo.setImageResource(R.drawable.vitalsource);
-
+                break;
+            case("AbeBooks.com"):
+                retailerLogo.setImageResource(R.drawable.abebookslogoprofile);
+                break;
+            case("TextBookUnderGround.com"):
+                retailerLogo.setImageResource(R.drawable.textbookunderground);
+                break;
+            case("CengageBrain.com"):
+                retailerLogo.setImageResource(R.drawable.cengagebrain);
+                break;
 
         }
 
@@ -95,7 +105,7 @@ class CustomListAdapter extends ArrayAdapter<Book> {
         seller.setTypeface(type2);
         
         //format percentage savings
-        percentageSavings.setText("% "+String.format("%.2f", getItem(position).percentageSavings));
+        percentageSavings.setText("$ "+String.valueOf(lowestPrice));
         percentageSavings.setTypeface(type);
 
         return customView; // return view.
