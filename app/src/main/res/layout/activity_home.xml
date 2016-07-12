@@ -7,7 +7,33 @@
     android:background="@drawable/swyftbooksackground"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#132761">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="56dp"
+            android:id="@+id/imageView"
+            android:src="@drawable/inapplogo"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Logout"
+            android:id="@+id/logOut"
+            android:textColor="#ffffffff"
+            android:clickable="true"
+            android:onClick="logOut"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="left|center_vertical"
@@ -76,32 +102,7 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp">
-
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="56dp"
-                android:id="@+id/imageView"
-                android:src="@drawable/inapplogo"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Logout"
-                android:id="@+id/logOut"
-                android:textColor="#ffffffff"
-                android:clickable="true"
-                android:onClick="logOut"
-                android:textSize="15sp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp" />
-        </RelativeLayout>
-
-        <ProgressBar
+    <ProgressBar
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"

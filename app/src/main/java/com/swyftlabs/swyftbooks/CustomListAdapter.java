@@ -104,8 +104,8 @@ class CustomListAdapter extends ArrayAdapter<Book> {
         seller.setText("Seller: " + getItem(position).retailer.retailerName);
         seller.setTypeface(type2);
         
-        //format percentage savings
-        percentageSavings.setText("$ "+String.valueOf(lowestPrice));
+        //format price
+        percentageSavings.setText("$"+String.format("%.2f", lowestPrice));
         percentageSavings.setTypeface(type);
 
         return customView; // return view.

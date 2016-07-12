@@ -91,11 +91,8 @@ public class SignUp extends AppCompatActivity{
         TextView appName;
         appName = (TextView)findViewById(R.id.AppNameTextView);
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
-        Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/Pacifico.tff");
+        Typeface type2 = Typeface.createFromAsset(getAssets(),"fonts/Pacifico.ttf");
 
-
-        String myString = "<i>" + "Swyft" + "</i>" + "Books";
-        appName.setText(Html.fromHtml(myString));
         appName.setTypeface(type2);
 
         backToLogin = (TextView)findViewById(R.id.backToLogin);
