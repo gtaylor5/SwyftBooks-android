@@ -113,7 +113,7 @@ public class Book implements Serializable {
             
         }else{
             
-            lowestPriceType = "Buy"
+            lowestPriceType = "Buy";
             
         }
         
