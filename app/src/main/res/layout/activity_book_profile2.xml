@@ -86,7 +86,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lowest Price Available"
+                android:text="Cheapest Option"
                 android:id="@+id/estimatedSavings"
                 android:textSize="15sp"
                 android:textColor="#626164"
@@ -99,7 +99,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="%"
+                android:text=""
+                android:textStyle = "italic"
                 android:id="@+id/percentageView"
                 android:layout_alignTop="@+id/estimatedSavings"
                 android:layout_alignParentEnd="true"
