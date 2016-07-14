@@ -58,6 +58,7 @@ class CustomListAdapter extends ArrayAdapter<Book> {
         double marketPrice = getItem(position).marketPlacePrice;
         double listPrice = getItem(position).listPrice;
         double lowestPrice = getItem(position).lowestPrice;
+        String priceType = getItem(position).lowestPriceType;
 
         String retailer = String.valueOf(getItem(position).retailer.retailerName);
         final String purchaseURL = String.valueOf(getItem(position).retailer.deepLink);
@@ -294,7 +295,15 @@ class CustomListAdapter extends ArrayAdapter<Book> {
         seller.setTypeface(type2);
         
         //format price
-        percentageSavings.setText("$"+String.format("%.2f", lowestPrice));
+        if(priceType == "Rent"){
+            
+            percentageSavings.setText("Rent");
+            
+        }else{
+            
+            percentageSavings.setText("Buy");
+            
+        }
         percentageSavings.setTypeface(type);
 
         return customView; // return view.
