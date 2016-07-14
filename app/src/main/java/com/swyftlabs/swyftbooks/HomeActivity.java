@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,14 +16,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -56,7 +50,7 @@ import java.lang.Runtime.*;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private String[] theRetailers = {"BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "VitalSource.com","AbeBooks.com", "CengageBrain.com", "TextBookUnderGround.com"};
+    private String[] theRetailers = {"BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "VitalSource.com","AbeBooks.com"};
     int visibility;
     ListAdapter resultsAdapter;
     Book[] bookResultsArray;
@@ -100,59 +94,10 @@ public class HomeActivity extends AppCompatActivity {
                    Toast.makeText(getApplicationContext(),"The book you were looking for could not be found. Please try again.",Toast.LENGTH_LONG).show();
 
                }
-            //set listview click listener
-            homeScreenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                //open up webpage
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                    //show progressbar while page is loading
-
-                    progressBar.setVisibility(View.VISIBLE);
-                    //Load webpage
-                    String link = bookResultsArray[position].retailer.deepLink;
-                    Log.i("AppInfo", link);
-                    Uri uri = Uri.parse(link);
-                    //client used to make sure webpage doesnt open outside app
-                    internet.setWebViewClient(new WebViewClient(){
-
-                        @Override
-                        public void onPageFinished(WebView view, String url) {
-                            super.onPageFinished(view, url);
-                            //hide progressbar once page is loaded
-                            progressBar.setVisibility(View.INVISIBLE);
-                        }
-
-
-                    });
-
-                    //load url and set the webview visible
-                    internet.loadUrl(uri.toString());
-                    internet.getSettings().setJavaScriptEnabled(true);
-                    internet.setVisibility(View.VISIBLE);
-                }
-
-            });
         } //end thread handler
     };
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-
-            isbnText.setVisibility(View.VISIBLE);
-            internet.setVisibility(View.INVISIBLE);
-            internet.clearCache(true);
-            internet.clearHistory();
-            internet.loadUrl("about:blank");
-            return false;
-
-        }
-
-        return super.onKeyDown(keyCode,event);
-
-    }
 
     public void logOut(View view){
 
@@ -359,6 +304,7 @@ public class HomeActivity extends AppCompatActivity {
             
         }else { //all other retailers
 
+            Log.i("AppInfo", theBook.retailer.urlToSearchForBook);
             theBook.retailer.XMLFile = new DownloadWebpageTask().execute(theBook.retailer.urlToSearchForBook).get();
             Log.i("AppInfo", theBook.retailer.XMLFile);
 
@@ -376,6 +322,7 @@ public class HomeActivity extends AppCompatActivity {
             NodeList rental = xmlDoc.getElementsByTagName("rental-offer");
             String nintyDay = "ninty-day-price";
             String semester = "semester-price";
+            String link = "link";
 
             NodeList sale = xmlDoc.getElementsByTagName("sale-offer");
             String saleElement = "price";
@@ -388,7 +335,12 @@ public class HomeActivity extends AppCompatActivity {
             double[] Prices = getElement(sale, saleElement);
             theBook.usedPrice = Prices[0];
             theBook.newPrice= Prices[1];
-            theBook.buyBackPrice = getElement(buyBack, buyElement)[0];
+            if(buyBack.getLength()!= 0) {
+                theBook.buyBackPrice = getElement(buyBack, buyElement)[0];
+            }
+
+            theBook.retailer.rentLink = getElementGenInfo(rental,link);
+            theBook.retailer.deepLink = getElementGenInfo(sale,link);
 
         } else if (theBook.retailer.retailerName == "Chegg.com") {
 
@@ -468,14 +420,6 @@ public class HomeActivity extends AppCompatActivity {
             NodeList bookAttrs = xmlDoc.getElementsByTagName("Book");
             theBook.newPrice = getElement(bookAttrs, "listingPrice")[0];
             theBook.retailer.deepLink = "http://"+getElementGenInfo(bookAttrs,"listingUrl");
-        }else if(theBook.retailer.retailerName == "TextBookUnderGround.com"){
-
-            Log.i("AppInfo", theBook.retailer.XMLFile);
-
-        }else if(theBook.retailer.retailerName == "CengageBrain.com"){
-
-            Log.i("AppInfo", theBook.retailer.XMLFile);
-
         }
         
         // return book with attributes

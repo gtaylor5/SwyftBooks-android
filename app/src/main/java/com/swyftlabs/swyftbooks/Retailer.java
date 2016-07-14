@@ -14,6 +14,8 @@ public class Retailer implements Serializable {
 	String urlToSearchForBook = "stuff"; // search url
 	String XMLFile = "stuff"; //xml file to be parsed
 	String deepLink = ""; // link to buy book on site.
+	String buyBackLink = "";
+	String rentLink = "";
 	
 	//build url based on ISBN number
 	public void buildURL(String ISBN){
@@ -24,6 +26,8 @@ public class Retailer implements Serializable {
 				this.urlToSearchForBook = "http://prices.valorebooks.com/lookup-multiple-categories?SiteID=3FZG6Y&ProductCode=" + ISBN +
 						"&TrackingID=3FZG6Y&Level=Detailed&NumberToShow=35&MinimumCondition=5&ShowEditionType=yes";
 				this.deepLink = "http://www.valorebooks.com/affiliate/buy/siteID=3FZG6Y/ISBN="+ISBN+"?default=used";
+				this.buyBackLink = "http://www.valorebooks.com/affiliate/sell/siteID=3FZG6Y/ISBN="+ISBN+"?t_id=3FZG6Y";
+
 				return;
 			case ("Chegg.com"):
 				this.urlToSearchForBook = "http://api.chegg.com/rent.svc?KEY=ada6c485ab35b1d2d8189fc08e5c9015&PW=2745708" +

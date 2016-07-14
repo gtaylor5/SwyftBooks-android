@@ -4,7 +4,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:background="#aaa9ab"
+    android:background="#132761"
     android:clickable="false">
 
     <!-- A CardView that contains a TextView -->
@@ -14,11 +14,11 @@
         android:id="@+id/card_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         card_view:cardUseCompatPadding="true"
         card_view:cardCornerRadius="2dp"
         card_view:cardElevation="2dp"
-        android:background="@null"
+        android:background="#132761"
         card_view:cardPreventCornerOverlap="false"
         android:elevation="2dp"
         android:focusable="false"
@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:id="@+id/customRow"
-            android:background="#f1f1f2"
+            android:background="#ffffffff"
             android:focusable="false"
             android:focusableInTouchMode="false"
             >
@@ -58,8 +58,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_alignParentTop="true"
-                android:textColor="#626164"
-                android:fontFamily="sans-serif"/>
+                android:textColor="#626164" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,8 +70,7 @@
                 android:textSize="15sp"
                 android:layout_alignParentTop="false"
                 android:textColor="#626164"
-                android:textStyle="italic"
-                android:fontFamily="sans-serif"/>
+                android:textStyle="italic" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -83,8 +81,7 @@
                 android:layout_alignStart="@+id/authorTextView"
                 android:layout_marginTop="5dp"
                 android:textColor="#bcbabe"
-                android:textSize="10sp"
-                android:fontFamily="sans-serif"/>
+                android:textSize="10sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -97,8 +94,7 @@
                 android:layout_below="@+id/sellerTextView"
                 android:layout_toEndOf="@+id/retailerLogo"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="sans-serif"/>
+                android:layout_marginBottom="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -113,6 +109,69 @@
                 android:textStyle="normal"
                 android:fontFamily="sans-serif"
                 android:textColor="#626164" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/retailerLogo"
+                android:layout_alignParentBottom="true"
+                android:weightSum="3"
+                android:layout_marginTop="10dp"
+                android:id="@+id/buttons">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Buy For: $"
+                    android:id="@+id/buyButton"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/buttonpressed"
+                    android:layout_alignParentStart="true"
+                    android:textColor="#626164"
+                    android:textSize="10sp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:elevation="2dp"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sell For: $"
+                    android:id="@+id/sellButton"
+                    android:background="@drawable/buttonpressed2"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignStart="@+id/estimatedSavings"
+                    android:layout_alignEnd="@+id/estimatedSavings"
+                    android:textColor="#626164"
+                    android:textSize="10sp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:elevation="2dp"
+                    android:gravity="center_vertical|center_horizontal" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rent For: $"
+                    android:id="@+id/rentButton"
+                    android:background="@drawable/buttonpressed"
+                    android:layout_alignBottom="@+id/sellButton"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/sellButton"
+                    android:textColor="#626164"
+                    android:textSize="10sp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:elevation="2dp"
+                    android:gravity="center_vertical|center_horizontal" />
+            </LinearLayout>
 
         </RelativeLayout>
 
