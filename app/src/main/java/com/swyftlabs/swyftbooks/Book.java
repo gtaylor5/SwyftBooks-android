@@ -29,6 +29,7 @@ public class Book implements Serializable {
     String urlToPurchase = "";
     String condition = "";
     String cheggPID = "";
+    String lowestPriceType = "";
 
     //unnecessary --> XML file is already in retailer class
     String BuyXMLFile = "stuff";
@@ -104,6 +105,18 @@ public class Book implements Serializable {
         //calculate percentage savings and clear arraylists
         percentageSavings = Math.abs((max-min)/max)*100;
         lowestPrice = min;
+        
+        if(lowestPrice == rentPrice_46 || lowestPrice == rentPrice_90 ||lowestPrice == rentPrice_178|| lowestPrice == rentPrice_summer
+        || lowestPrice == rentPrice_spring || lowestPrice == rentPrice_fall || lowestPrice == rentPrice_semester){
+            
+            lowestPriceType = "Rent";
+            
+        }else{
+            
+            lowestPriceType = "Buy"
+            
+        }
+        
         nonZeroPrices.clear();
         prices.clear();
     }
