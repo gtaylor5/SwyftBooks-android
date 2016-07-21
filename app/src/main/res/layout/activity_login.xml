@@ -35,7 +35,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/EmailEditText"
                         android:inputType="textEmailAddress"
-                        android:hint="Email"
+                        android:hint="Email@myEmail.com"
                         android:textColorHint="#ffffffff"
                         android:textColor="#ffffff"
                         android:elegantTextHeight="false"
