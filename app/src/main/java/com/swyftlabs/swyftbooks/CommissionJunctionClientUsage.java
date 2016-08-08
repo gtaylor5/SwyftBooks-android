@@ -5,8 +5,6 @@ package com.swyftlabs.swyftbooks;
  */
 
 import android.os.AsyncTask;
-import android.os.Looper;
-import android.util.Log;
 import com.loopj.android.http.*;
 import java.io.IOException;
 

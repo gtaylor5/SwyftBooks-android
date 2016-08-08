@@ -1,22 +1,11 @@
 package com.swyftlabs.swyftbooks;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 import java.io.Serializable;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 
 public class Book implements Serializable {
     
@@ -24,10 +13,6 @@ public class Book implements Serializable {
     String ISBN = "";
     String bookTitle = "something";
     String bookAuthor = "something";
-    String bookEdition = "";
-    String bookPubDate = "";
-    String urlToPurchase = "";
-    String condition = "";
     String cheggPID = "";
     String lowestPriceType = "";
 
@@ -39,8 +24,8 @@ public class Book implements Serializable {
     double newPrice = 0.0;
     double usedPrice = 0.0;
     double marketPlacePrice = 0.0;
-    double eBookPrice = 0.0;
     double buyBackPrice = 0.0;
+    ArrayList<Double> buyPrices = new ArrayList<Double>();
 
     //rental prices
     double rentPrice_fall = 0.0;
@@ -50,6 +35,7 @@ public class Book implements Serializable {
     double rentPrice_178 = 0.0;
     double rentPrice_90 = 0.0;
     double rentPrice_46 = 0.0;
+    ArrayList<Double> rentPrices = new ArrayList<Double>();
 
     double percentageSavings = -1.0;
     double lowestPrice = 0.0;

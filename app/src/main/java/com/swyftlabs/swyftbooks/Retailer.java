@@ -1,9 +1,7 @@
 package com.swyftlabs.swyftbooks;
 
 
-import android.util.Log;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 
@@ -59,8 +57,8 @@ public class Retailer implements Serializable {
 			case("CengageBrain.com"):
 				this.urlToSearchForBook = "/v2/product-search?website-id=8044180&advertiser-ids=1845757&isbn="+ISBN;
 				return;
-			case("TextBookUnderGround.com"):
-				this.urlToSearchForBook = "/v2/product-serach?website-id=8044180&advertiser-ids=4170143&isbn="+ISBN;
+			case("BiggerBooks.com"):
+				this.urlToSearchForBook = "/v2/product-search?website-id=8044180&advertiser-ids=1087150&isbn="+ISBN;
 				return;
 		}
 	}

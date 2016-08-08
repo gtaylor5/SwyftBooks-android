@@ -1,19 +1,16 @@
 package com.swyftlabs.swyftbooks;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.parse.ParseAnalytics;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -59,6 +56,7 @@ public class SignUp extends AppCompatActivity{
                             Toast.makeText(getApplicationContext(), "Uh Oh! Something went wrong. Are you already registered?",
                                     Toast.LENGTH_LONG).show();
                         }else{
+                            ParseAnalytics.trackEvent("New Sign Up");
                             startActivity(new Intent(SignUp.this, HomeActivity.class));
                             finish();
                         }
@@ -91,8 +89,11 @@ public class SignUp extends AppCompatActivity{
         TextView appName;
         appName = (TextView)findViewById(R.id.AppNameTextView);
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
-        Typeface type2 = Typeface.createFromAsset(getAssets(),"fonts/Pacifico.ttf");
+        Typeface type2 = Typeface.createFromAsset(getAssets(),"fonts/Arimo-Regular.ttf");
 
+        String temp = "Swyft";
+        String myString = "<i>Swyft</i>";
+        appName.setText(Html.fromHtml("<i>"+temp+"</i><b>Books</b>"));
         appName.setTypeface(type2);
 
         backToLogin = (TextView)findViewById(R.id.backToLogin);

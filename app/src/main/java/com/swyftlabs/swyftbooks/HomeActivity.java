@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -27,30 +25,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
 import android.os.Message;
-
+import com.parse.ParseAnalytics;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import java.lang.Runtime.*;
 
 
 public class HomeActivity extends AppCompatActivity {
 
-    private String[] theRetailers = {"BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "VitalSource.com","AbeBooks.com"};
+    private String[] theRetailers = {"VitalSource.com","BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "AbeBooks.com", "BiggerBooks.com"};
     int visibility;
     ListAdapter resultsAdapter;
     Book[] bookResultsArray;
@@ -111,6 +107,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
         
         //Font used for isbnEditText and appName
         Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Regular.ttf");
@@ -145,7 +142,7 @@ public class HomeActivity extends AppCompatActivity {
 
                     homeScreenListView.setAdapter(null);
                     bookResultsArray = null;
-
+                    ParseAnalytics.trackEvent("search");
                     myClickHandler(getCurrentFocus());
                     
                     return true;
@@ -168,12 +165,29 @@ public class HomeActivity extends AppCompatActivity {
         progressBar.setVisibility(view.VISIBLE); //Show progressBar
         hideSoftKeyboard(this); //Hide keyboard
         //Start new thread
+
         Runnable r = new Runnable() {
             @Override
             public void run() {
                 //set ISBN and remove dashes if any
                 ISBN = String.valueOf(isbnText.getText());
                 ISBN.replaceAll("-", "");
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("ISBN");
+                query.whereEqualTo("ISBNumber", ISBN);
+
+                try {
+                    ParseObject object = query.getFirst();
+                    object.increment("TimesSearched");
+                    object.saveInBackground();
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    ParseObject object = new ParseObject("ISBN");
+                    object.put("ISBNumber", ISBN);
+                    object.put("TimesSearched", 1);
+                    object.saveInBackground();
+                }
+
 
                 synchronized (this) {
                     //check for internet connection
@@ -195,18 +209,24 @@ public class HomeActivity extends AppCompatActivity {
                                     
                                     //Get book prices based on retailer name and url
                                     temp = getBookAttrs(temp);
+                                    if(temp == null){
+
+                                        continue;
+
+                                    }
                                     
                                     //Set book's title and author using Chegg
-                                    temp.bookAuthor = getBookAttributes().bookAuthor;
-                                    temp.bookTitle = getBookAttributes().bookTitle;
+                                    if(temp.retailer.retailerName != "VitalSource.com") {
+                                        temp.bookAuthor = getBookAttributes().bookAuthor;
+                                        temp.bookTitle = getBookAttributes().bookTitle;
+                                    }
+
                                     
                                     //calculate percentage savings
                                     temp.setPercentageSavings();
                                     
                                     //add book only if there is a price. need to fix this logic
-                                    if (temp.percentageSavings != -1 || temp.retailer.retailerName == "VitalSournce.com") {
-                                        bookResults.add(temp);
-                                    } else if(temp.retailer.retailerName == "VitalSource.com") {
+                                    if (temp != null){
 
                                         bookResults.add(temp);
 
@@ -233,6 +253,12 @@ public class HomeActivity extends AppCompatActivity {
                         //set BookResultsArray
                         bookResultsArray = new Book[bookResults.size()];
                         bookResultsArray = bookResults.toArray(bookResultsArray);
+
+                        for(int i = 0; i < bookResultsArray.length; i++){
+
+                            Log.i("AppInfo", bookResultsArray[i].retailer.retailerName);
+
+                        }
                         
                         //clear arrayList and garbage collect
                         bookResults.clear();
@@ -297,7 +323,7 @@ public class HomeActivity extends AppCompatActivity {
     public Book getBookAttrs(Book theBook) throws Exception {
         
         //Special statement for commission junction retailers
-        if(theBook.retailer.retailerName == "VitalSource.com" || theBook.retailer.retailerName == "TextBookUnderGround.com"){
+        if(theBook.retailer.retailerName == "VitalSource.com" || theBook.retailer.retailerName == "BiggerBooks.com"){
 
             theBook.retailer.XMLFile = new CommissionJunctionClientUsage().getBookInfo(theBook.retailer.urlToSearchForBook);
             Log.i("AppInfo", theBook.retailer.XMLFile);
@@ -342,6 +368,8 @@ public class HomeActivity extends AppCompatActivity {
             theBook.retailer.rentLink = getElementGenInfo(rental,link);
             theBook.retailer.deepLink = getElementGenInfo(sale,link);
 
+            return theBook;
+
         } else if (theBook.retailer.retailerName == "Chegg.com") {
 
             NodeList error = xmlDoc.getElementsByTagName("ErrorMessage");
@@ -361,6 +389,8 @@ public class HomeActivity extends AppCompatActivity {
             theBook.cheggPID = pids.item(0).getTextContent();
             theBook.retailer.setCheggDeepLink(theBook.cheggPID);
 
+            return theBook;
+
         } else if (theBook.retailer.retailerName == "BookRenter.com") {
             NodeList error = xmlDoc.getElementsByTagName("error");
             if (error.getLength() != 0) {
@@ -368,7 +398,7 @@ public class HomeActivity extends AppCompatActivity {
             } else {
                 NodeList availability = xmlDoc.getElementsByTagName("availability");
                 Log.i("AppInfo", availability.item(0).getTextContent());
-                if(availability.getLength()!= 0) {
+                if(!(availability.item(0).getTextContent().equalsIgnoreCase("Unavailable"))) {
                     NodeList prices = xmlDoc.getElementsByTagName("rental_price");
                     for (int i = 0; i < prices.getLength(); i++) {
                         if (i == 0) {
@@ -386,6 +416,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     NodeList url = xmlDoc.getElementsByTagName("book_url");
                     theBook.retailer.deepLink = url.item(0).getTextContent();
+                    return theBook;
                 }else{
 
                     return null;
@@ -397,29 +428,90 @@ public class HomeActivity extends AppCompatActivity {
 
         }else if(theBook.retailer.retailerName == "eCampus.com"){
 
+            String[] priceTypes = {"ListPrice", "UsedPrice", "NewPrice", "MarketPlacePrice", "eBookPrice","RentalPrice", "Rental2Price", "Rental3Price"};
             NodeList listPrice = xmlDoc.getElementsByTagName("item");
-            theBook.listPrice = getElement(listPrice, "ListPrice")[0];
-            theBook.usedPrice = getElement(listPrice, "UsedPrice")[0];
-            String stuff = Double.toString(getElement(listPrice,"NewPrice")[0]).replaceAll("\\$","");
-            theBook.newPrice = Double.parseDouble(stuff);
-            theBook.marketPlacePrice = getElement(listPrice, "MarketPlacePrice")[0];
-            theBook.eBookPrice = getElement(listPrice, "eBookPrice")[0];
-            theBook.rentPrice_178 = getElement(listPrice, "RentalPrice")[0];
-            theBook.rentPrice_90 = getElement(listPrice, "Rental2Price")[0];
-            theBook.rentPrice_46 = getElement(listPrice, "Rental3Price")[0];
+            for(int i = 0; i < priceTypes.length; i++){
+
+                if(getElement(listPrice, priceTypes[i]).length != 0){
+
+                    if(i < 5){
+
+                        if(getElement(listPrice, priceTypes[i])[0] == 0.0){
+
+                            continue;
+
+                        }
+
+
+                        if(i == 2){
+
+                            String stuff = Double.toString(getElement(listPrice,"NewPrice")[0]).replaceAll("$","");
+                            theBook.buyPrices.add(Double.parseDouble(stuff));
+                            continue;
+
+                        }
+
+                        theBook.buyPrices.add(getElement(listPrice, priceTypes[i])[0]);
+
+                    }else{
+
+                        if(getElement(listPrice, priceTypes[i])[0] == 0.0){
+
+                            continue;
+
+                        }
+                        theBook.rentPrices.add(getElement(listPrice, priceTypes[i])[0]);
+
+                    }
+
+                }
+
+            }
+
+            if(theBook.rentPrices.size() == 0 && theBook.buyPrices.size() == 0){
+
+                return null;
+
+            }
+
+            return theBook;
 
         }else if(theBook.retailer.retailerName == "VitalSource.com"){
+            try {
+                NodeList info = xmlDoc.getElementsByTagName("product");
+                NodeList title = xmlDoc.getElementsByTagName("name");
+                theBook.bookTitle = title.item(0).getTextContent();
+                NodeList url = xmlDoc.getElementsByTagName("buy-url");
+                theBook.retailer.deepLink = url.item(0).getTextContent();
+                theBook.usedPrice = getElement(info, "price")[0];
+                return theBook;
+            }catch(Exception e) {
 
-            NodeList info = xmlDoc.getElementsByTagName("product");
-            NodeList url = xmlDoc.getElementsByTagName("buy-url");
-            theBook.retailer.deepLink = url.item(0).getTextContent();
-            theBook.usedPrice = getElement(info, "price")[0];
+                return null;
 
+            }
         }else if(theBook.retailer.retailerName == "AbeBooks.com"){
+            try {
+                NodeList bookAttrs = xmlDoc.getElementsByTagName("Book");
+                theBook.newPrice = getElement(bookAttrs, "listingPrice")[0];
+                theBook.retailer.deepLink = "http://" + getElementGenInfo(bookAttrs, "listingUrl");
+            }catch(Exception e){
 
-            NodeList bookAttrs = xmlDoc.getElementsByTagName("Book");
-            theBook.newPrice = getElement(bookAttrs, "listingPrice")[0];
-            theBook.retailer.deepLink = "http://"+getElementGenInfo(bookAttrs,"listingUrl");
+                return null;
+
+            }
+        }else if(theBook.retailer.retailerName == "BiggerBooks.com"){
+            try {
+                NodeList info = xmlDoc.getElementsByTagName("product");
+                NodeList url = xmlDoc.getElementsByTagName("buy-url");
+                theBook.retailer.deepLink = url.item(0).getTextContent();
+                theBook.usedPrice = getElement(info, "price")[0];
+            }catch(Exception e){
+
+                return null;
+
+            }
+
         }
         
         // return book with attributes

@@ -1,28 +1,28 @@
 package com.swyftlabs.swyftbooks;
 
-import android.content.ComponentName;
+
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
+
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.parse.ParseAnalytics;
 
-import static android.support.v4.app.ActivityCompat.startActivity;
+import java.util.ArrayList;
+import java.util.Collections;
+
 
 
 class CustomListAdapter extends ArrayAdapter<Book> {
@@ -90,7 +90,8 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
                         @Override
                         public void onClick(View v) {
-
+                            ParseAnalytics.trackEvent("ValoreBooks.com Selected");
+                            ParseAnalytics.trackEvent("Sell Clicked");
                             String link = getItem(pos).retailer.buyBackLink;
                             Uri uri = Uri.parse(link);
                             Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -113,7 +114,8 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
                     @Override
                     public void onClick(View v) {
-
+                        ParseAnalytics.trackEvent("ValoreBooks.com Selected");
+                        ParseAnalytics.trackEvent("Rent Clicked");
                         String link = getItem(pos).retailer.rentLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -129,7 +131,8 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
                     @Override
                     public void onClick(View v) {
-
+                        ParseAnalytics.trackEvent("ValoreBooks.com Selected");
+                        ParseAnalytics.trackEvent("Buy Clicked");
                         String link = getItem(pos).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -156,7 +159,8 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
                     @Override
                     public void onClick(View v) {
-
+                        ParseAnalytics.trackEvent("Chegg.com Selected");
+                        ParseAnalytics.trackEvent("Rent Clicked");
                         String link = getItem(pos1).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -181,7 +185,8 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
                     @Override
                     public void onClick(View v) {
-
+                        ParseAnalytics.trackEvent("BookRenter.com Selected");
+                        ParseAnalytics.trackEvent("Rent Clicked");
                         String link = getItem(pos2).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -193,30 +198,56 @@ class CustomListAdapter extends ArrayAdapter<Book> {
                 });
                 break;
             case("eCampus.com"):
+                getItem(position).rentPrices.trimToSize();
+                Collections.sort(getItem(position).rentPrices);
                 retailerLogo.setImageResource(R.drawable.ecampuslogo);
-                rent.setText("Rent for: $"+String.format("%.2f",getItem(position).rentPrice_178));
                 final int pos3 = position;
-                rent.setOnClickListener(new View.OnClickListener() {
+                if(getItem(position).rentPrices.size() != 0) {
+                    rent.setText("Rent for: $" + String.format("%.2f", getItem(position).rentPrices.get(0)));
+                    rent.setOnClickListener(new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
+                        @Override
+                        public void onClick(View v) {
+                            ParseAnalytics.trackEvent("eCampus.com Selected");
+                            ParseAnalytics.trackEvent("Rent Clicked");
+                            String link = getItem(pos3).retailer.deepLink;
+                            Uri uri = Uri.parse(link);
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getContext().startActivity(intent);
 
-                        String link = getItem(pos3).retailer.deepLink;
-                        Uri uri = Uri.parse(link);
-                        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getContext().startActivity(intent);
+                        }
 
+                    });
+                }else {
+
+                    rent.setText("Rent for: $");
+                    rent.setClickable(false);
+                    rent.setAlpha(.25f);
+
+                }
+
+
+                getItem(position).buyPrices.trimToSize();
+                Collections.sort(getItem(position).buyPrices);
+                int i = 0;
+                while(i < getItem(position).buyPrices.size()){
+
+                    if(getItem(position).buyPrices.get(i) == 0){
+                            i++;
+                            continue;
                     }
 
-                });
+                    break;
 
-                buy.setText("Buy for: $"+String.format("%.2f",getItem(position).usedPrice));
+                }
+                buy.setText("Buy for: $"+String.format("%.2f",getItem(position).buyPrices.get(i)));
                 buy.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-
+                        ParseAnalytics.trackEvent("eCampus.com Selected");
+                        ParseAnalytics.trackEvent("Buy Clicked");
                         String link = getItem(pos3).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -231,6 +262,7 @@ class CustomListAdapter extends ArrayAdapter<Book> {
                 break;
             case("VitalSource.com"):
                 retailerLogo.setImageResource(R.drawable.vitalsource);
+                author.setText("");
                 sell.setClickable(false);
                 sell.setAlpha(.25f);
                 rent.setClickable(false);
@@ -241,7 +273,8 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
                     @Override
                     public void onClick(View v) {
-
+                        ParseAnalytics.trackEvent("VitalSource.com Selected");
+                        ParseAnalytics.trackEvent("Buy Clicked");
                         String link = getItem(pos4).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -264,8 +297,34 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
                     @Override
                     public void onClick(View v) {
-
+                        ParseAnalytics.trackEvent("AbeBooks.com Selected");
+                        ParseAnalytics.trackEvent("Buy Clicked");
                         String link = getItem(pos5).retailer.deepLink;
+                        Uri uri = Uri.parse(link);
+                        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().startActivity(intent);
+
+                    }
+
+                });
+                break;
+            case("BiggerBooks.com"):
+                retailerLogo.setImageResource(R.drawable.biggerbooks);
+                author.setText("");
+                sell.setClickable(false);
+                sell.setAlpha(.25f);
+                rent.setClickable(false);
+                rent.setAlpha(.25f);
+                final int pos6 = position;
+                buy.setText("Buy for: $"+String.format("%.2f",getItem(position).usedPrice));
+                buy.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        ParseAnalytics.trackEvent("BiggerBooks.com Selected");
+                        ParseAnalytics.trackEvent("Buy Clicked");
+                        String link = getItem(pos6).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

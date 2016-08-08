@@ -58,7 +58,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_alignParentTop="true"
-                android:textColor="#626164" />
+                android:textColor="#626164"
+                android:maxLines="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -85,30 +86,32 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_Best Option: "
+                android:layout_height="wrap_content"
                 android:id="@+id/estimatedSavings"
                 android:textSize="15sp"
                 android:textColor="#626164"
-                android:textStyle="italic"
                 android:layout_below="@+id/sellerTextView"
                 android:layout_toEndOf="@+id/retailerLogo"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="20dp"
+                android:text="Best Option: "
+                android:textStyle="bold|italic" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textStyle = "italic"
+                android:text="Rent"
                 android:id="@+id/percentageView"
-                android:layout_alignTop="@+id/estimatedSavings"
-                android:layout_alignParentEnd="true"
+                android:layout_alignParentEnd="false"
                 android:layout_alignParentStart="false"
                 android:layout_marginRight="15dp"
                 android:textSize="15sp"
-                android:textStyle="normal"
+                android:textStyle="bold|italic"
                 android:fontFamily="sans-serif"
-                android:textColor="#626164" />
+                android:textColor="#626164"
+                android:layout_below="@+id/estimatedSavings"
+                android:layout_alignTop="@+id/estimatedSavings"
+                android:layout_toRightOf="@+id/estimatedSavings" />
 
             <LinearLayout
                 android:orientation="horizontal"

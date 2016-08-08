@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.*;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,11 +32,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     //method to change activity to sign up
     public void goToSignUp(View view){
+        ParseAnalytics.trackEventInBackground("Sign Up Clicked");
         startActivity(new Intent(LoginActivity.this, SignUp.class));
     }
 
     //method to skip login/signup
     public void skip(View view){
+        ParseAnalytics.trackEventInBackground("Continue as Guest");
         startActivity(new Intent(LoginActivity.this, HomeActivity.class));
         finish();
     }
@@ -43,6 +46,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // recover lost password
     public void getPassword(View view){
         final String email = String.valueOf(this.emailField.getText());
+        ParseAnalytics.trackEventInBackground("Forgot Password Request");
         ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
             public void done(ParseException e) {
                 if (e == null) {
@@ -58,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -65,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ParseUser currentUser = ParseUser.getCurrentUser();
 
         if(currentUser != null){
-
+            ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
             Log.i("AppInfo", currentUser.getUsername());
             finish();
@@ -74,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //typefaces
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
-        Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/Pacifico.ttf");
+        Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/Arimo-Regular.ttf");
         
         //link variables and attributes
         appName = (TextView)findViewById(R.id.AppNameTextView);
@@ -86,6 +91,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         skip = (TextView)findViewById(R.id.skipTextView);
         
         //italicize swyft in swyftbooks and set typeface
+        String temp = "Swyft";
+        String myString = "<i>Swyft</i>";
+        appName.setText(Html.fromHtml("<i>"+temp+"</i><b>Books</b>"));
         appName.setTypeface(type2);
         
         //set Typefaces 
