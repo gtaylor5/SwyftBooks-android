@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name = "com.swyftlabs.swyftbooks.SwyftBooks">
+
+        <meta-data android:name="com.parse.push.gcm_sender_id"
+            android:value="id:1470629874245" />;
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -31,7 +35,6 @@
         <activity android:name=".SignUp" android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name=".HomeActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity android:name=".BookProfile"></activity>
     </application>
 
 </manifest>

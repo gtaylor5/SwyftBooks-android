@@ -27,9 +27,12 @@ import android.os.Handler;
 import android.os.Message;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.PushService;
+
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -108,6 +111,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
+
         
         //Font used for isbnEditText and appName
         Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Regular.ttf");
@@ -185,6 +189,17 @@ public class HomeActivity extends AppCompatActivity {
                     ParseObject object = new ParseObject("ISBN");
                     object.put("ISBNumber", ISBN);
                     object.put("TimesSearched", 1);
+                    try {
+
+                        object.put("title", getBookAttributes().bookTitle);
+                        object.save();
+                        Log.i("AppInfo", getBookAttributes().bookTitle);
+
+                    }catch(Exception ex){
+
+                        ex.printStackTrace();
+
+                    }
                     object.saveInBackground();
                 }
 
@@ -206,6 +221,7 @@ public class HomeActivity extends AppCompatActivity {
                                     //Set book's retailer and build the search url
                                     temp.retailer.retailerName = theRetailers[i];
                                     temp.retailer.buildURL(ISBN);
+                                    temp.ISBN = ISBN;
                                     
                                     //Get book prices based on retailer name and url
                                     temp = getBookAttrs(temp);
@@ -216,10 +232,11 @@ public class HomeActivity extends AppCompatActivity {
                                     }
                                     
                                     //Set book's title and author using Chegg
-                                    if(temp.retailer.retailerName != "VitalSource.com") {
+
                                         temp.bookAuthor = getBookAttributes().bookAuthor;
                                         temp.bookTitle = getBookAttributes().bookTitle;
-                                    }
+
+
 
                                     
                                     //calculate percentage savings
@@ -345,6 +362,13 @@ public class HomeActivity extends AppCompatActivity {
         //parse specifically based on retailer xml layout
         if (theBook.retailer.retailerName == "ValoreBooks.com") {
 
+            NodeList errorList = xmlDoc.getElementsByTagName("error");
+            if(errorList.getLength() != 0){
+
+                return null;
+
+            }
+
             NodeList rental = xmlDoc.getElementsByTagName("rental-offer");
             String nintyDay = "ninty-day-price";
             String semester = "semester-price";
@@ -359,6 +383,7 @@ public class HomeActivity extends AppCompatActivity {
             theBook.rentPrice_90 = getElement(rental, nintyDay)[0];
             theBook.rentPrice_semester = getElement(rental, semester)[0];
             double[] Prices = getElement(sale, saleElement);
+            Log.i("AppInfo", String.valueOf(Prices[0]));
             theBook.usedPrice = Prices[0];
             theBook.newPrice= Prices[1];
             if(buyBack.getLength()!= 0) {

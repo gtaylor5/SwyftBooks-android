@@ -3,6 +3,7 @@ package com.swyftlabs.swyftbooks;
 import android.app.Application;
 import android.content.Intent;
 import com.parse.Parse;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
 /**
