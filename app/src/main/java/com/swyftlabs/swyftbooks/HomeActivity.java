@@ -312,7 +312,7 @@ public class HomeActivity extends AppCompatActivity {
 
         Book tempBook = new Book("Chegg.com");
         tempBook.retailer.buildURL(ISBN);
-        tempBook.retailer.XMLFile = new DownloadWebpageTask().execute(tempBook.retailer.urlToSearchForBook).get();
+        tempBook.retailer.XMLFile = new DownloadWebpageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempBook.retailer.urlToSearchForBook).get();
 
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         InputSource input = new InputSource();
