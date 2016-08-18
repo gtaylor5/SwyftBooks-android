@@ -29,9 +29,11 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
+import com.parse.SaveCallback;
 
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
@@ -40,6 +42,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import java.io.StringReader;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,7 +52,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private String[] theRetailers = {"VitalSource.com","BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "AbeBooks.com", "BiggerBooks.com"};
+    private String[] theRetailers = {"VitalSource.com","BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "AbeBooks.com", "BiggerBooks.com", "Amazon.com"};
     int visibility;
     ListAdapter resultsAdapter;
     Book[] bookResultsArray;
@@ -193,7 +196,6 @@ public class HomeActivity extends AppCompatActivity {
 
                         object.put("title", getBookAttributes().bookTitle);
                         object.save();
-                        Log.i("AppInfo", getBookAttributes().bookTitle);
 
                     }catch(Exception ex){
 
@@ -220,7 +222,9 @@ public class HomeActivity extends AppCompatActivity {
                                     
                                     //Set book's retailer and build the search url
                                     temp.retailer.retailerName = theRetailers[i];
+                                    Log.i("AppInfo", temp.retailer.retailerName);
                                     temp.retailer.buildURL(ISBN);
+                                    Log.i("AppInfo", temp.retailer.urlToSearchForBook);
                                     temp.ISBN = ISBN;
                                     
                                     //Get book prices based on retailer name and url
@@ -347,7 +351,6 @@ public class HomeActivity extends AppCompatActivity {
             
         }else { //all other retailers
 
-            Log.i("AppInfo", theBook.retailer.urlToSearchForBook);
             theBook.retailer.XMLFile = new DownloadWebpageTask().execute(theBook.retailer.urlToSearchForBook).get();
             Log.i("AppInfo", theBook.retailer.XMLFile);
 
@@ -383,7 +386,6 @@ public class HomeActivity extends AppCompatActivity {
             theBook.rentPrice_90 = getElement(rental, nintyDay)[0];
             theBook.rentPrice_semester = getElement(rental, semester)[0];
             double[] Prices = getElement(sale, saleElement);
-            Log.i("AppInfo", String.valueOf(Prices[0]));
             theBook.usedPrice = Prices[0];
             theBook.newPrice= Prices[1];
             if(buyBack.getLength()!= 0) {
@@ -516,15 +518,22 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         }else if(theBook.retailer.retailerName == "AbeBooks.com"){
-            try {
+
                 NodeList bookAttrs = xmlDoc.getElementsByTagName("Book");
-                theBook.newPrice = getElement(bookAttrs, "listingPrice")[0];
-                theBook.retailer.deepLink = "http://" + getElementGenInfo(bookAttrs, "listingUrl");
-            }catch(Exception e){
 
-                return null;
+                if(bookAttrs.getLength() != 0 ) {
 
-            }
+                    theBook.newPrice = getElement(bookAttrs, "listingPrice")[0];
+                    theBook.retailer.deepLink =  URLEncoder.encode(getElementGenInfo(bookAttrs, "listingUrl"), "UTF-8");
+                    theBook.retailer.deepLink = "http://www.dpbolvw.net/click-8044180-5435709?url=http://" + theBook.retailer.deepLink.replaceAll("=","%3D");
+                    Log.i("AppInfo",theBook.retailer.deepLink);
+
+                }else {
+
+                    return null;
+
+                }
+
         }else if(theBook.retailer.retailerName == "BiggerBooks.com"){
             try {
                 NodeList info = xmlDoc.getElementsByTagName("product");
@@ -532,6 +541,39 @@ public class HomeActivity extends AppCompatActivity {
                 theBook.retailer.deepLink = url.item(0).getTextContent();
                 theBook.usedPrice = getElement(info, "price")[0];
             }catch(Exception e){
+
+                return null;
+
+            }
+
+        }else if(theBook.retailer.retailerName == "Amazon.com"){
+
+            NodeList itemResponse = xmlDoc.getElementsByTagName("Errors");
+            String error = "";
+            Log.i("AppInfo",String.valueOf(itemResponse.getLength()));
+            if(itemResponse.getLength() == 0){
+
+                NodeList link = xmlDoc.getElementsByTagName("Item");
+                theBook.retailer.deepLink = getElementGenInfo(link,"DetailPageURL");
+                NodeList listPrice = xmlDoc.getElementsByTagName("ListPrice");
+                if(listPrice.getLength() != 0) {
+                    theBook.listPrice = new Double(getElement(listPrice, "Amount")[0] / 100);
+                }
+                NodeList newOffers = xmlDoc.getElementsByTagName("LowestNewPrice");
+                if(newOffers.getLength() != 0) {
+                    theBook.newPrice = getElement(newOffers, "Amount")[0] / 100;
+                }
+                NodeList usedOffers = xmlDoc.getElementsByTagName("LowestUsedPrice");
+                if(usedOffers.getLength()!=0) {
+                    theBook.usedPrice = getElement(usedOffers, "Amount")[0] / 100;
+                }
+                NodeList sellBack = xmlDoc.getElementsByTagName("TradeInValue");
+                if(sellBack.getLength() != 0) {
+                    theBook.buyBackPrice = getElement(sellBack, "Amount")[0] / 100;
+                    Log.i("AppInfo", String.valueOf(theBook.buyBackPrice));
+                }
+
+            }else{
 
                 return null;
 

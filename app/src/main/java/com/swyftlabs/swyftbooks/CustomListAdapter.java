@@ -29,8 +29,7 @@ import java.util.Collections;
 
 
 
-class CustomListAdapter extends ArrayAdapter<Book> {
-    static int pos = 0;
+class CustomListAdapter extends ArrayAdapter<Book>{
     public CustomListAdapter(Context context, Book[] books) {
         super(context, R.layout.activity_book_profile2, books);
     }
@@ -71,9 +70,9 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
             case("ValoreBooks.com"):
                 retailerLogo.setImageResource(R.drawable.valore);
+                final int pos = position;
                 if(getItem(position).buyBackPrice!=0.0) {
                     sell.setText("Sell for: $" + String.format("%.2f", getItem(position).buyBackPrice));
-                    pos = position;
                     sell.setOnClickListener(new View.OnClickListener() {
 
                         @Override
@@ -189,6 +188,7 @@ class CustomListAdapter extends ArrayAdapter<Book> {
                         ParseAnalytics.trackEvent("ValoreBooks.com");
                         ParseAnalytics.trackEvent("Buy");
                         String link = getItem(pos).retailer.deepLink;
+                        Log.i("AppInfo",link);
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -200,7 +200,102 @@ class CustomListAdapter extends ArrayAdapter<Book> {
 
                 break;
             case("Amazon.com"):
-                retailerLogo.setImageResource(R.drawable.amznlogo);
+                final int pos7 = position;
+                if(getItem(position).buyBackPrice != 0.0) {
+                    sell.setText("Sell for: $" + String.format("%.2f", getItem(position).buyBackPrice));
+                    sell.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
+                            query.whereEqualTo("name", "Amazon.com");
+
+                            try {
+                                ParseObject object = query.getFirst();
+                                object.increment("timesSelected");
+                                object.saveInBackground();
+
+                            } catch (ParseException e) {
+
+                            }
+
+                            ParseObject object = new ParseObject("Amazon");
+                            object.put("ISBN", getItem(pos7).ISBN);
+                            object.put("Type", "Sell");
+                            object.put("Price", getItem(pos7).buyBackPrice);
+                            object.put("Earnings", getItem(pos7).buyBackPrice * .06);
+                            object.saveInBackground();
+
+                            object.increment("TimesSearched");
+                            object.saveInBackground();
+
+
+
+                            ParseAnalytics.trackEvent("Amazon");
+                            ParseAnalytics.trackEvent("Sell");
+                            String link = getItem(pos7).retailer.deepLink;
+                            Uri uri = Uri.parse(link);
+                            Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getContext().startActivity(intent);
+
+                        }
+
+                    });
+                }else{
+
+                    sell.setClickable(false);
+                    sell.setAlpha(.25f);
+
+
+                }
+
+                buy.setText("Buy for: $"+String.format("%.2f",getItem(position).usedPrice));
+                buy.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
+                        query.whereEqualTo("name", "Amazon.com");
+
+                        try {
+                            ParseObject object = query.getFirst();
+                            object.increment("timesSelected");
+                            object.saveInBackground();
+
+                        } catch (ParseException e) {
+
+                        }
+                        try {
+                            ParseObject object = new ParseObject("Amazon");
+                            object.put("ISBN", getItem(pos7).ISBN);
+                            object.put("Type", "Buy");
+                            object.put("Price", getItem(pos7).usedPrice);
+                            object.put("Earnings", getItem(pos7).usedPrice * .06);
+                            object.saveInBackground();
+                        }catch(Exception e){
+
+                            Log.i("AppInfo", e.toString());
+
+                        }
+
+                        ParseAnalytics.trackEvent("Amazon.com");
+                        ParseAnalytics.trackEvent("Buy");
+                        String link = getItem(pos7).retailer.deepLink;
+                        Log.i("AppInfo",link);
+                        Uri uri = Uri.parse(link);
+                        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().startActivity(intent);
+
+                    }
+
+                });
+
+                rent.setClickable(false);
+                rent.setAlpha(.25f);
+
+
                 break;
             case("Chegg.com"):
                 retailerLogo.setImageResource(R.drawable.chegg);

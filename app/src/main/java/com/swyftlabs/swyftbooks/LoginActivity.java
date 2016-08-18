@@ -62,10 +62,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
         super.onCreate(savedInstanceState);
+        ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
         setContentView(R.layout.activity_login);
         //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        ParseInstallation.getCurrentInstallation().saveInBackground();
 
         ParseUser currentUser = ParseUser.getCurrentUser();
 

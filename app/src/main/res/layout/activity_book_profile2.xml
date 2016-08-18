@@ -59,7 +59,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_alignParentTop="true"
                 android:textColor="#626164"
-                android:maxLines="1" />
+                android:singleLine="true" />
 
             <TextView
                 android:layout_width="wrap_content"

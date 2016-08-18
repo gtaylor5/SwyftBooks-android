@@ -2,8 +2,11 @@ package com.swyftlabs.swyftbooks;
 
 
 
-import java.io.Serializable;
+import android.util.Log;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Retailer implements Serializable {
@@ -14,6 +17,9 @@ public class Retailer implements Serializable {
 	String deepLink = ""; // link to buy book on site.
 	String buyBackLink = "";
 	String rentLink = "";
+
+	private final String AWS_ACCESS_KEY_ID = "AKIAJWKQAZX4GB63XKKA";
+	private final String AWS_SECRET_KEY = "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";
 	
 	//build url based on ISBN number
 	public void buildURL(String ISBN){
@@ -32,7 +38,7 @@ public class Retailer implements Serializable {
 						"&R=XML&V=2.0&isbn=" + ISBN + "&with_pids=1&results_per_page=1";
 				return;
 			case ("Amazon.com"):
-				this.urlToSearchForBook = ""; // INSERT URL CONCATENTATION HERE
+				this.urlToSearchForBook = generateAmazonLink(ISBN);
 				return;
 			case ("half.com"):
 				this.urlToSearchForBook = "";// INSERT URL CONCATENTATION HERE
@@ -65,7 +71,7 @@ public class Retailer implements Serializable {
 	
 	//chegg deeplink has special requirements
 	public void setCheggDeepLink(String pid){
-		this.deepLink = "http://www.chegg.com/?referrer=ada6c485ab35b1d2d8189fc08e5c9015&pids="+pid;
+		this.deepLink = "http://chggtrx.com/click.track?CID=267582&AFID=393411&ADID=1088043&SID=&PIDs="+pid;
 	}
 
 	public Retailer(){// default constructor
@@ -73,5 +79,42 @@ public class Retailer implements Serializable {
 
 	public Retailer(String name){
 		this.retailerName = name;
+	}
+
+	public String generateAmazonLink(String ISBN){
+
+
+		final String ENDPOINT = "ecs.amazonaws.com";
+
+		SignedRequestsHelper helper;
+		try {
+			helper = SignedRequestsHelper.getInstance(ENDPOINT, AWS_ACCESS_KEY_ID, AWS_SECRET_KEY);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		String requestUrl = null;
+		String title = null;
+
+        /* The helper can sign requests in two forms - map form and string form */
+
+        /*
+         * Here is an example in map form, where the request parameters are stored in a map.
+         */
+		System.out.println("Map form example:");
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("Service", "AWSECommerceService");
+		params.put("AssociateTag", "swyftbooksapp-20");
+		params.put("Operation", "ItemLookup");
+		params.put("ResponseGroup", "Large");
+		params.put("SearchIndex", "All");
+		params.put("ItemId", ISBN);
+		params.put("IdType", "ISBN");
+
+		requestUrl = helper.sign(params);
+
+		return requestUrl;
+
 	}
 }

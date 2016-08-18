@@ -67,6 +67,19 @@ public class Book implements Serializable {
         prices.add(listPrice);
         prices.add(newPrice);
         prices.add(rentPrice_spring);
+
+        for(int i = 0; i < this.buyPrices.size(); i++){
+
+            prices.add(buyPrices.get(i));
+
+        }
+        for(int i = 0; i < this.rentPrices.size(); i++){
+
+            prices.add(rentPrices.get(i));
+
+        }
+
+
         prices.trimToSize();
         
         //fill non-zero prices array
