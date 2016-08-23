@@ -2,7 +2,6 @@ package com.swyftlabs.swyftbooks;
 
 
 
-import android.util.Log;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -29,8 +28,9 @@ public class Retailer implements Serializable {
 			case ("ValoreBooks.com"):
 				this.urlToSearchForBook = "http://prices.valorebooks.com/lookup-multiple-categories?SiteID=3FZG6Y&ProductCode=" + ISBN +
 						"&TrackingID=3FZG6Y&Level=Detailed&NumberToShow=35&MinimumCondition=5&ShowEditionType=yes";
-				this.deepLink = "http://www.valorebooks.com/affiliate/buy/siteID=3FZG6Y/ISBN="+ISBN+"?default=used";
+				this.deepLink = "http://www.valorebooks.com/affiliate/buy/siteID=3FZG6Y/ISBN="+ISBN+"?default=lowestprice";
 				this.buyBackLink = "http://www.valorebooks.com/affiliate/sell/siteID=3FZG6Y/ISBN="+ISBN+"?t_id=3FZG6Y";
+				this.rentLink = "http://www.valorebooks.com/affiliate/buy/siteID=3FZG6Y/ISBN="+ISBN+"?default=rent";
 
 				return;
 			case ("Chegg.com"):
@@ -107,10 +107,11 @@ public class Retailer implements Serializable {
 		params.put("Service", "AWSECommerceService");
 		params.put("AssociateTag", "swyftbooksapp-20");
 		params.put("Operation", "ItemLookup");
-		params.put("ResponseGroup", "Large");
+		params.put("ResponseGroup", "Images,ItemAttributes,Offers");
 		params.put("SearchIndex", "All");
 		params.put("ItemId", ISBN);
 		params.put("IdType", "ISBN");
+
 
 		requestUrl = helper.sign(params);
 
