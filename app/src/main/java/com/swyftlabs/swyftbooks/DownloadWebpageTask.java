@@ -1,7 +1,6 @@
 package com.swyftlabs.swyftbooks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -59,8 +58,7 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
     protected void onPostExecute(Book book) {
         super.onPostExecute(book);
         int tasksLeft = this.workCounter.decrementAndGet();
-        Log.i("AppInfo", String.valueOf(tasksLeft));
-        if(tasksLeft == 1){
+        if(tasksLeft == 0){
             HomeActivity.done = true;
         }
     }
@@ -304,7 +302,6 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
                 theBook.buyPrices.add(getElement(bookAttrs, "listingPrice")[0]);
                 theBook.retailer.deepLink =  URLEncoder.encode(getElementGenInfo(bookAttrs, "listingUrl"), "UTF-8");
                 theBook.retailer.deepLink = "http://www.dpbolvw.net/click-8044180-5435709?url=http://" + theBook.retailer.deepLink.replaceAll("=","%3D");
-                Log.i("AppInfo", theBook.retailer.deepLink);
                 theBook.seller = "AbeBooks";
                 theBook.percentReturn = .05;
             }else {
@@ -328,7 +325,6 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
             }
 
         }else if(theBook.retailer.retailerName == "Amazon.com"){
-
             NodeList itemResponse = xmlDoc.getElementsByTagName("Errors");
             String error = "";
             if(itemResponse.getLength() == 0){
@@ -337,19 +333,19 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
                 theBook.retailer.deepLink = getElementGenInfo(link,"DetailPageURL");
                 NodeList listPrice = xmlDoc.getElementsByTagName("ListPrice");
                 if(listPrice.getLength() != 0) {
-                    theBook.buyPrices.add(new Double(getElement(listPrice, "Amount")[0] / 100));
+                    theBook.buyPrices.add(Double.parseDouble(((Element) listPrice.item(0)).getElementsByTagName("Amount").item(0).getTextContent()) / 100);
                 }
                 NodeList newOffers = xmlDoc.getElementsByTagName("LowestNewPrice");
                 if(newOffers.getLength() != 0) {
-                    theBook.buyPrices.add(getElement(newOffers, "Amount")[0] / 100);
+                    theBook.buyPrices.add(Double.parseDouble(((Element) newOffers.item(0)).getElementsByTagName("Amount").item(0).getTextContent()) / 100);
                 }
                 NodeList usedOffers = xmlDoc.getElementsByTagName("LowestUsedPrice");
                 if(usedOffers.getLength()!=0) {
-                    theBook.buyPrices.add(getElement(usedOffers, "Amount")[0] / 100);
+                    theBook.buyPrices.add(Double.parseDouble(((Element) usedOffers.item(0)).getElementsByTagName("Amount").item(0).getTextContent()) / 100);
                 }
                 NodeList sellBack = xmlDoc.getElementsByTagName("TradeInValue");
                 if(sellBack.getLength() != 0) {
-                    theBook.sellPrice = getElement(sellBack, "Amount")[0] / 100;
+                    theBook.sellPrice = Double.parseDouble(((Element)sellBack.item(0)).getElementsByTagName("Amount").item(0).getTextContent()) / 100;
                 }
 
                 theBook.seller = "Amazon";
