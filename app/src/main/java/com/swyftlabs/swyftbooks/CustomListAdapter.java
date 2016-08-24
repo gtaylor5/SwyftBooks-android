@@ -130,7 +130,7 @@ class CustomListAdapter extends ArrayAdapter<Book>{
                 retailerLogo.setImageResource(R.drawable.vitalsource);
                 break;
             case("BiggerBooks.com"):
-                retailerLogo.setImageResource(R.drawable.vitalsource);
+                retailerLogo.setImageResource(R.drawable.biggerbooks);
                 break;
 
         }

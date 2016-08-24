@@ -45,12 +45,8 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
             try {
                 theBook = getBookAttrs(theBook);
                 return theBook;
-
             }catch(Exception e){
-
-
             }
-
 
         } catch (IOException e) {
             return null;
@@ -63,7 +59,7 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
     protected void onPostExecute(Book book) {
         super.onPostExecute(book);
         int tasksLeft = this.workCounter.decrementAndGet();
-
+        Log.i("AppInfo", String.valueOf(tasksLeft));
         if(tasksLeft == 1){
             HomeActivity.done = true;
         }
@@ -127,16 +123,9 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
         return null;
     }
 
-    public Book getBookAttrs(Book theBook) throws Exception {
+    public static Book getBookAttrs(Book theBook) throws Exception {
 
         //Special statement for commission junction retailers
-        if(theBook.retailer.retailerName == "VitalSource.com" || theBook.retailer.retailerName == "BiggerBooks.com"){
-            return null;
-            //theBook.retailer.XMLFile = new CommissionJunctionClientUsage().getBookInfo(theBook.retailer.urlToSearchForBook);
-            //Log.i("AppInfo", theBook.retailer.XMLFile);
-
-        }
-
         //build xml document for parsing
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         InputSource input = new InputSource();
@@ -166,6 +155,9 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
 
             theBook.rentPrices.add(getElement(rental, nintyDay)[0]);
             theBook.rentPrices.add(getElement(rental, semester)[0]);
+            if(theBook.rentPrices.get(0) == 1000 && theBook.rentPrices.get(1) == 1000){
+                theBook.rentPrices.removeAll(theBook.rentPrices);
+            }
             double[] Prices = getElement(sale, saleElement);
             theBook.buyPrices.add(Prices[0]);
             theBook.buyPrices.add(Prices[1]);
@@ -315,7 +307,6 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
                 Log.i("AppInfo", theBook.retailer.deepLink);
                 theBook.seller = "AbeBooks";
                 theBook.percentReturn = .05;
-
             }else {
 
                 return null;
@@ -381,8 +372,8 @@ class DownloadWebpageTask extends AsyncTask<String, Void, Book> {
     public static double[] getElement(NodeList node, String Element) {
 
         double prices;
-        double max = Double.MIN_VALUE;
-        double min = Double.MAX_VALUE;
+        double max = 0;
+        double min = 1000;
         double[] priceArray = {0, 0};
 
         try {

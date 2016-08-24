@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -46,7 +47,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private String[] theRetailers = {"VitalSource.com","BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "AbeBooks.com", "BiggerBooks.com", "Amazon.com"};
+    private String[] theRetailers = {/*"VitalSource.com"*/"BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "AbeBooks.com" /*"BiggerBooks.com"*/, "Amazon.com"};
     int visibility;
     ListAdapter resultsAdapter;
     Book[] bookResultsArray;
@@ -70,6 +71,11 @@ public class HomeActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             
             //set listview adapter
+               if(bookResultsArray == null){
+                   progressBar.setVisibility(View.GONE);
+                   Toast.makeText(getApplicationContext(),"Please check your internet connection and try again.",Toast.LENGTH_LONG).show();
+                   return;
+               }
             resultsAdapter = new CustomListAdapter(getApplicationContext(), bookResultsArray);
             homeScreenListView.setAdapter(resultsAdapter);
             homeScreenListView.setDividerHeight(0);
@@ -181,8 +187,11 @@ public class HomeActivity extends AppCompatActivity {
 
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-        count = new AtomicInteger(8);
+        if(count == null) {
+            count = new AtomicInteger(7);
+        }else{
+            count = new AtomicInteger(7);
+        }
 
         if (networkInfo != null && networkInfo.isConnected()) {
             try {
@@ -198,27 +207,27 @@ public class HomeActivity extends AppCompatActivity {
                 temp.retailer.buildURL(ISBN);
                 temp.ISBN = ISBN;
 
+                if(temp.retailer.retailerName == "VitalSource.com" || temp.retailer.retailerName == "BiggerBooks.com") {
+                    continue;
+                }
+
                 try {
 
-                    if(temp.retailer.retailerName == "VitalSource.com"){
-                        continue;
-                    }
                     temp.bookTitle = title;
                     temp.bookAuthor = author;
-                    System.out.println(i +" : " + temp.retailer.urlToSearchForBook);
-                    DownloadWebpageTask task = new DownloadWebpageTask(count, temp);
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                        bookResults.add((task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, temp.retailer.urlToSearchForBook).get()));
-                    else
-                        bookResults.add(task.execute(temp.retailer.urlToSearchForBook).get());
 
+                        DownloadWebpageTask task = new DownloadWebpageTask(count, temp);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                            bookResults.add((task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, temp.retailer.urlToSearchForBook).get()));
+                        else
+                            bookResults.add(task.execute(temp.retailer.urlToSearchForBook).get());
 
                 }catch(Exception e) {
                     continue;
                 }
             }
             while(done != true){
-                continue;
+
             }
             bookResults.trimToSize();
             removeNullAndSetLowestPrices();
@@ -232,10 +241,8 @@ public class HomeActivity extends AppCompatActivity {
             bookResultsArray = bookResults.toArray(bookResultsArray);
             bookResults.clear();
             System.gc();
-
         }
                 handler.sendEmptyMessage(0);
-
             }
         };
 
@@ -245,11 +252,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     static void removeNullAndSetLowestPrices(){
-        for(int i = 0; i < bookResults.size(); i++) {
-            if (bookResults.get(i) == null) {
+        int i = 0;
+        while(i < bookResults.size()){
+
+            if(bookResults.get(i) == null){
+
                 bookResults.remove(i);
+                continue;
+
             }
+
             bookResults.get(i).sortPrices();
+            i++;
         }
     }
 
