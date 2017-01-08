@@ -1,16 +1,18 @@
 package com.swyftlabs.swyftbooks;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.parse.ParseAnalytics;
+
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -28,56 +30,67 @@ public class SignUp extends AppCompatActivity{
     Button signUpButton;
     TextView backToLogin;
 
-    //go back to login
+
     public void goToLogIn(View view){
+
         startActivity(new Intent(SignUp.this, LoginActivity.class));
+
     }
 
-    //signUp method
+
     public void signUp(View view){
+
+        Log.i("AppInfo", String.valueOf(emailField.getText()));
+        Log.i("AppInfo", String.valueOf(passwordField.getText()));
 
         String email = String.valueOf(emailField.getText());
         String password = String.valueOf(passwordField.getText());
         String confirm = String.valueOf(confirmPasswordField.getText());
-        
-        //check if password is valid
+
         if(confirm.equals(password) && password != null){
-            //check if email is valid NEED TO CHECK FOR @ SYMBOL
-            if(email != null && email.contains("@")) {
+
+            if(email != null) {
                 ParseUser newUser = new ParseUser();
                 newUser.setUsername(email);
                 newUser.setPassword(password);
-                
-                //sign user up if everything is okay
+
+
                 newUser.signUpInBackground(new SignUpCallback() {
                     @Override
                     public void done(ParseException e) {
+
                         if (e != null) {
+
                             Toast.makeText(getApplicationContext(), "Uh Oh! Something went wrong. Are you already registered?",
                                     Toast.LENGTH_LONG).show();
+
                         }else{
-                            ParseAnalytics.trackEvent("New Sign Up");
+
+                            Toast.makeText(getApplicationContext(),"Success!", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(SignUp.this, HomeActivity.class));
                             finish();
+
                         }
+
+
                     }
                 });
+
             }else{
 
-                if(email == null) {
-                    Toast.makeText(getApplicationContext(), "Your email address cannot be blank.",
-                            Toast.LENGTH_LONG).show();
-                }else{
+                Toast.makeText(getApplicationContext(), "Your email address cannot be blank.",
+                        Toast.LENGTH_LONG).show();
 
-                    Toast.makeText(getApplicationContext(), "The email address you entered is not valid.",
-                            Toast.LENGTH_LONG).show();
-
-                }
             }
         }else{
+
+
             Toast.makeText(view.getContext(), "Your Passwords did not match. Please try again.",
                     Toast.LENGTH_LONG).show();
+
         }
+
+
     }
 
     @Override
@@ -89,11 +102,11 @@ public class SignUp extends AppCompatActivity{
         TextView appName;
         appName = (TextView)findViewById(R.id.AppNameTextView);
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
-        Typeface type2 = Typeface.createFromAsset(getAssets(),"fonts/Arimo-Regular.ttf");
+        Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Regular.ttf");
 
-        String temp = "Swyft";
-        String myString = "<i>Swyft</i>";
-        appName.setText(Html.fromHtml("<i>"+temp+"</i><b>Books</b>"));
+
+        String myString = "<i>" + "Swyft" + "</i>" + "Books";
+        appName.setText(Html.fromHtml(myString));
         appName.setTypeface(type2);
 
         backToLogin = (TextView)findViewById(R.id.backToLogin);
