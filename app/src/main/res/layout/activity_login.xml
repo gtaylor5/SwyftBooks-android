@@ -124,6 +124,7 @@
         android:nestedScrollingEnabled="false"
         android:layout_above="@+id/LogInButton"
         android:layout_marginBottom="7.5dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:contextClickable="true" />
 
 </RelativeLayout>

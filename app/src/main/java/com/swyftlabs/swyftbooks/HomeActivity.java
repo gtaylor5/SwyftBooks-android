@@ -1,11 +1,13 @@
 package com.swyftlabs.swyftbooks;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,15 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
 import android.os.Message;
-import com.parse.ParseAnalytics;
-import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.ParseObject;
-import com.parse.ParsePush;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.PushService;
-import com.parse.SaveCallback;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
@@ -43,9 +41,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import java.io.StringReader;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -53,19 +56,23 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class HomeActivity extends AppCompatActivity {
 
     private String[] theRetailers = {"VitalSource.com","BookRenter.com","eCampus.com","ValoreBooks.com", "Chegg.com", "AbeBooks.com", "BiggerBooks.com", "Amazon.com"};
-    int visibility;
-    ListAdapter resultsAdapter;
-    Book[] bookResultsArray;
     private ArrayList<Book> bookResults = new ArrayList<Book>();
     private String ISBN;
     private EditText isbnText;
-    ListView homeScreenListView;
+    int visibility;
     private TextView appName;
     private ProgressBar progressBar;
+
+    ListAdapter resultsAdapter;
+    Book[] bookResultsArray;
+    ListView homeScreenListView;
     RelativeLayout bg;
     WebView internet;
 
-
+    private DatabaseReference mDatabase;
+    private FirebaseUser user;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     Handler handler = new Handler(){
            @Override
@@ -103,18 +110,31 @@ public class HomeActivity extends AppCompatActivity {
 
     public void logOut(View view){
 
-        ParseUser user = ParseUser.getCurrentUser();
-        user.logOut();
-        startActivity(new Intent(HomeActivity.this,LoginActivity.class));
+        user = mAuth.getCurrentUser();
+        if(user != null){
+            mAuth.signOut();
+            return;
+        }
+        startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+        finish();
 
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
 
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                finish();
+            }
+        };
         
         //Font used for isbnEditText and appName
         Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Regular.ttf");
@@ -149,7 +169,6 @@ public class HomeActivity extends AppCompatActivity {
 
                     homeScreenListView.setAdapter(null);
                     bookResultsArray = null;
-                    ParseAnalytics.trackEvent("search");
                     myClickHandler(getCurrentFocus());
                     
                     return true;
@@ -179,32 +198,6 @@ public class HomeActivity extends AppCompatActivity {
                 //set ISBN and remove dashes if any
                 ISBN = String.valueOf(isbnText.getText());
                 ISBN.replaceAll("-", "");
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("ISBN");
-                query.whereEqualTo("ISBNumber", ISBN);
-
-                try {
-                    ParseObject object = query.getFirst();
-                    object.increment("TimesSearched");
-                    object.saveInBackground();
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    ParseObject object = new ParseObject("ISBN");
-                    object.put("ISBNumber", ISBN);
-                    object.put("TimesSearched", 1);
-                    try {
-
-                        object.put("title", getBookAttributes().bookTitle);
-                        object.save();
-
-                    }catch(Exception ex){
-
-                        ex.printStackTrace();
-
-                    }
-                    object.saveInBackground();
-                }
-
 
                 synchronized (this) {
                     //check for internet connection
@@ -310,7 +303,7 @@ public class HomeActivity extends AppCompatActivity {
     //use chegg to get title and author of book
     public Book getBookAttributes() throws Exception {
 
-        Book tempBook = new Book("Chegg.com");
+        Book tempBook = new Book("Amazon.com");
         tempBook.retailer.buildURL(ISBN);
         tempBook.retailer.XMLFile = new DownloadWebpageTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tempBook.retailer.urlToSearchForBook).get();
 
@@ -326,14 +319,23 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
-        NodeList BookData = xmlDoc.getElementsByTagName("BookInfo");
-        String bookTitle = "Title";
+        xmlDoc.getDocumentElement().normalize();
 
-        NodeList authorInfo = xmlDoc.getElementsByTagName("Authors");
-        String author = "Author";
+        NodeList BookData = xmlDoc.getElementsByTagName("ItemAttributes");
 
-        tempBook.bookTitle = getElementGenInfo(BookData, bookTitle);
-        tempBook.bookAuthor = getElementGenInfo(authorInfo, author);
+        tempBook.bookTitle = getTitleAndAuthor(BookData, "Title");
+        tempBook.bookAuthor = getTitleAndAuthor(BookData, "Author");
+
+        if(mAuth.getCurrentUser() != null) {
+            DatabaseReference ref = mDatabase.child("Users").child(mAuth.getCurrentUser().getUid()).child("Searches").child(ISBN);
+            String timeStamp = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss").format(new Date());
+            Map<String, Object> searchQueryUpdate = new HashMap<String, Object>();
+            searchQueryUpdate.put("Author", tempBook.bookAuthor);
+            searchQueryUpdate.put("Title", tempBook.bookTitle);
+            searchQueryUpdate.put("ISBN", ISBN);
+            searchQueryUpdate.put("Search Date", timeStamp);
+            ref.updateChildren(searchQueryUpdate);
+        }
 
         return tempBook;
 
@@ -557,19 +559,20 @@ public class HomeActivity extends AppCompatActivity {
                 theBook.retailer.deepLink = getElementGenInfo(link,"DetailPageURL");
                 NodeList listPrice = xmlDoc.getElementsByTagName("ListPrice");
                 if(listPrice.getLength() != 0) {
-                    theBook.listPrice = new Double(getElement(listPrice, "Amount")[0] / 100);
+                    theBook.listPrice = new Double(getElement(listPrice, "Amount")[1] / 100);
                 }
                 NodeList newOffers = xmlDoc.getElementsByTagName("LowestNewPrice");
                 if(newOffers.getLength() != 0) {
-                    theBook.newPrice = getElement(newOffers, "Amount")[0] / 100;
+                    theBook.newPrice = getElement(newOffers, "Amount")[1] / 100;
                 }
                 NodeList usedOffers = xmlDoc.getElementsByTagName("LowestUsedPrice");
                 if(usedOffers.getLength()!=0) {
-                    theBook.usedPrice = getElement(usedOffers, "Amount")[0] / 100;
+                    theBook.usedPrice = getElement(usedOffers, "Amount")[1] / 100;
+                    Log.i("AppInfo", String.valueOf(theBook.usedPrice));
                 }
                 NodeList sellBack = xmlDoc.getElementsByTagName("TradeInValue");
                 if(sellBack.getLength() != 0) {
-                    theBook.buyBackPrice = getElement(sellBack, "Amount")[0] / 100;
+                    theBook.buyBackPrice = getElement(sellBack, "Amount")[1] / 100;
                     Log.i("AppInfo", String.valueOf(theBook.buyBackPrice));
                 }
 
@@ -655,8 +658,9 @@ public class HomeActivity extends AppCompatActivity {
                 if (child instanceof CharacterData) {
 
                     CharacterData data = (CharacterData) child;
-                    return info = String.valueOf(data.getData());
-
+                    info = String.valueOf(data.getData());
+                    System.out.println(info);
+                    return info;
                 }
 
 
@@ -673,6 +677,12 @@ public class HomeActivity extends AppCompatActivity {
 
         return info;
 
+    }
+
+    public String getTitleAndAuthor(NodeList node, String element){
+        Node n = node.item(0);
+        Element el = (Element) n;
+        return el.getElementsByTagName(element).item(0).getTextContent();
     }
 
 }//end class

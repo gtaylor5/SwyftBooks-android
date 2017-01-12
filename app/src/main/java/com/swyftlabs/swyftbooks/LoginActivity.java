@@ -2,19 +2,33 @@ package com.swyftlabs.swyftbooks;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.*;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.*;
-
+import com.google.android.gms.fitness.data.Value;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,18 +41,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView skip;
     TextView forgotPassword;
     TextView appName;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference ref;
     
     RelativeLayout bg;
+    ValueEventListener guestLogin;
+    ValueEventListener signUpListener;
 
     //method to change activity to sign up
     public void goToSignUp(View view){
-        ParseAnalytics.trackEventInBackground("Sign Up Clicked");
+        createSignUpListener();
         startActivity(new Intent(LoginActivity.this, SignUp.class));
     }
 
     //method to skip login/signup
     public void skip(View view){
-        ParseAnalytics.trackEventInBackground("Continue as Guest");
+        createGuestLoginListener();
         startActivity(new Intent(LoginActivity.this, HomeActivity.class));
         finish();
     }
@@ -46,16 +66,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // recover lost password
     public void getPassword(View view){
         final String email = String.valueOf(this.emailField.getText());
-        ParseAnalytics.trackEventInBackground("Forgot Password Request");
-        ParseUser.requestPasswordResetInBackground(email, new RequestPasswordResetCallback() {
-            public void done(ParseException e) {
-                if (e == null) {
-                    Toast.makeText(getApplicationContext(), ("A password reset email has been sent to " + email), Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), ("Something went wrong. Please ensure your email is correct and try again."), Toast.LENGTH_LONG).show();
+        System.out.println(email);
+        if(!email.isEmpty()) {
+            mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), "A password reset email was sent to: " + email, Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "The email address could not be found.", Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            Toast.makeText(getApplicationContext(), "The email field cannot be blank. Please try again.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     
@@ -63,21 +97,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
         setContentView(R.layout.activity_login);
-        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        ParseInstallation.getCurrentInstallation().saveInBackground();
 
-        ParseUser currentUser = ParseUser.getCurrentUser();
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        if(currentUser != null){
-            ParseAnalytics.trackAppOpenedInBackground(this.getIntent());
-            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-            Log.i("AppInfo", currentUser.getUsername());
-            finish();
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener(){
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    ref.child(user.getUid()).child("Logins").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int loginCount = dataSnapshot.getValue(Integer.class);
+                            loginCount++;
+                            ref.child(user.getUid()).child("Logins").setValue(loginCount);
+                        }
 
-        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
+                        }
+                    });
+                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "The email/password combination you entered was not recognized. Please try again.", Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        ref = FirebaseDatabase.getInstance().getReference();
+        FirebaseDatabase.getInstance().goOnline();
         //typefaces
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/RobotoSlab-Thin.ttf");
         Typeface type2 = Typeface.createFromAsset(getAssets(), "fonts/Arimo-Regular.ttf");
@@ -109,28 +161,69 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         emailField.getBackground().setAlpha(26);
         passwordField.getBackground().setAlpha(26);
         loginButton.getBackground().setAlpha(128);
-        
+
     }
 
     @Override
     public void onClick(View v) {
         final String email = String.valueOf(emailField.getText());
         final String password = String.valueOf(passwordField.getText());
-        
-        ParseUser.logInInBackground(email,password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                //check credentials and start home activity
-                if(user != null){
-                    Toast.makeText(getApplicationContext(), "Welcome!",
-                            Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                    finish();
 
-                }else{
+        Log.i("AppInfo", email);
+
+        if(!email.isEmpty() && !password.isEmpty()) {
+            Log.i("AppInfo", email +" "+ password);
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (!task.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), "The email/password combination you entered was not recognized. Please try again.", Toast.LENGTH_LONG).show();
+                    }else {
+                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                        finish();
+                    }
                 }
+            });
+        }else{
+            Toast.makeText(getApplicationContext(), "The email/password field cannot be blank.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // create listeners
+
+    public void createGuestLoginListener(){
+
+        guestLogin = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int value = dataSnapshot.getValue(Integer.class);
+                value++;
+                ref.child("Guests").setValue(value);
             }
-        });
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        ref.child("Guests").addListenerForSingleValueEvent(guestLogin);
+    }
+
+    public void createSignUpListener(){
+        signUpListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int value = dataSnapshot.getValue(Integer.class);
+                value++;
+                ref.child("Sign Up Attempts").setValue(value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        ref.child("Sign Up Attempts").addListenerForSingleValueEvent(signUpListener);
     }
 }

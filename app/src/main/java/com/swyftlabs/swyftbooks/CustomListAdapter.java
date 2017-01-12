@@ -77,33 +77,9 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                         @Override
                         public void onClick(View v) {
-                            ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                            query.whereEqualTo("name", "ValoreBooks.com");
 
-                            try {
-                                ParseObject object = query.getFirst();
-                                object.increment("timesSelected");
-                                object.saveInBackground();
-
-                            } catch (ParseException e) {
-
-                            }
-
-                            ParseObject object = new ParseObject("ValoreBooks");
-                            object.put("ISBN", getItem(pos).ISBN);
-                            object.put("Type", "Sell");
-                            object.put("Price", getItem(pos).buyBackPrice);
-                            object.put("Earnings", getItem(pos).buyBackPrice * .075);
-                            object.saveInBackground();
-
-                                object.increment("TimesSearched");
-                                object.saveInBackground();
-
-
-
-                            ParseAnalytics.trackEvent("ValoreBooks");
-                            ParseAnalytics.trackEvent("Sell");
                             String link = getItem(pos).retailer.buyBackLink;
+                            Log.i("AppInfo", link);
                             Uri uri = Uri.parse(link);
                             Intent intent = new Intent(Intent.ACTION_VIEW,uri);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -125,27 +101,6 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "ValoreBooks.com");
-
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-
-                        ParseObject object = new ParseObject("ValoreBooks");
-                        object.put("ISBN", getItem(pos).ISBN);
-                        object.put("Type", "Rent");
-                        object.put("Price", getItem(pos).lowestPrice);
-                        object.put("Earnings", getItem(pos).lowestPrice * .075);
-                        object.saveInBackground();
-
-                        ParseAnalytics.trackEvent("ValoreBooks.com");
-                        ParseAnalytics.trackEvent("Rent");
                         String link = getItem(pos).retailer.rentLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -161,32 +116,7 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "ValoreBooks.com");
 
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-                        try {
-                            ParseObject object = new ParseObject("ValoreBooks");
-                            object.put("ISBN", getItem(pos).ISBN);
-                            object.put("Type", "Buy");
-                            object.put("Price", getItem(pos).usedPrice);
-                            object.put("Earnings", getItem(pos).usedPrice * .075);
-                            object.saveInBackground();
-                        }catch(Exception e){
-
-                            Log.i("AppInfo", e.toString());
-
-                        }
-
-                        ParseAnalytics.trackEvent("ValoreBooks.com");
-                        ParseAnalytics.trackEvent("Buy");
                         String link = getItem(pos).retailer.deepLink;
                         Log.i("AppInfo",link);
                         Uri uri = Uri.parse(link);
@@ -207,32 +137,7 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                         @Override
                         public void onClick(View v) {
-                            ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                            query.whereEqualTo("name", "Amazon.com");
 
-                            try {
-                                ParseObject object = query.getFirst();
-                                object.increment("timesSelected");
-                                object.saveInBackground();
-
-                            } catch (ParseException e) {
-
-                            }
-
-                            ParseObject object = new ParseObject("Amazon");
-                            object.put("ISBN", getItem(pos7).ISBN);
-                            object.put("Type", "Sell");
-                            object.put("Price", getItem(pos7).buyBackPrice);
-                            object.put("Earnings", getItem(pos7).buyBackPrice * .06);
-                            object.saveInBackground();
-
-                            object.increment("TimesSearched");
-                            object.saveInBackground();
-
-
-
-                            ParseAnalytics.trackEvent("Amazon");
-                            ParseAnalytics.trackEvent("Sell");
                             String link = getItem(pos7).retailer.deepLink;
                             Uri uri = Uri.parse(link);
                             Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -255,32 +160,7 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "Amazon.com");
 
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-                        try {
-                            ParseObject object = new ParseObject("Amazon");
-                            object.put("ISBN", getItem(pos7).ISBN);
-                            object.put("Type", "Buy");
-                            object.put("Price", getItem(pos7).usedPrice);
-                            object.put("Earnings", getItem(pos7).usedPrice * .06);
-                            object.saveInBackground();
-                        }catch(Exception e){
-
-                            Log.i("AppInfo", e.toString());
-
-                        }
-
-                        ParseAnalytics.trackEvent("Amazon.com");
-                        ParseAnalytics.trackEvent("Buy");
                         String link = getItem(pos7).retailer.deepLink;
                         Log.i("AppInfo",link);
                         Uri uri = Uri.parse(link);
@@ -309,25 +189,6 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "Chegg.com");
-
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-                        ParseObject object = new ParseObject("Chegg");
-                        object.put("ISBN", getItem(pos1).ISBN);
-                        object.put("Type", "Rent");
-                        object.put("Price", lowestPrice);
-                        object.put("Earnings", lowestPrice * .03);
-                        object.saveInBackground();
-                        ParseAnalytics.trackEvent("Chegg.com");
-                        ParseAnalytics.trackEvent("Rent");
                         String link = getItem(pos1).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -352,19 +213,6 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "BookRenter.com");
-
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-                        ParseAnalytics.trackEvent("BookRenter.com");
-                        ParseAnalytics.trackEvent("Rent");
                         String link = getItem(pos2).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -386,25 +234,7 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                         @Override
                         public void onClick(View v) {
-                            ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                            query.whereEqualTo("name", "eCampus.com");
 
-                            try {
-                                ParseObject object = query.getFirst();
-                                object.increment("timesSelected");
-                                object.saveInBackground();
-
-                            } catch (ParseException e) {
-
-                            }
-                            ParseObject object = new ParseObject("eCampus");
-                            object.put("ISBN", getItem(pos3).ISBN);
-                            object.put("Type", "Rent");
-                            object.put("Price", getItem(pos3).rentPrices.get(0));
-                            object.put("Earnings", getItem(pos3).rentPrices.get(0) * .08);
-                            object.saveInBackground();
-                            ParseAnalytics.trackEvent("eCampus.com");
-                            ParseAnalytics.trackEvent("Rent");
                             String link = getItem(pos3).retailer.deepLink;
                             Uri uri = Uri.parse(link);
                             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -441,25 +271,6 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "eCampus.com");
-
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-                        ParseObject object = new ParseObject("eCampus");
-                        object.put("ISBN", getItem(pos3).ISBN);
-                        object.put("Type", "Buy");
-                        object.put("Price", getItem(pos3).buyPrices.get(0));
-                        object.put("Earnings", getItem(pos3).buyPrices.get(0) * .055);
-                        object.saveInBackground();
-                        ParseAnalytics.trackEvent("eCampus.com");
-                        ParseAnalytics.trackEvent("Buy");
                         String link = getItem(pos3).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -485,25 +296,7 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "VitalSource.com");
 
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-                        ParseObject object = new ParseObject("VitalSource");
-                        object.put("ISBN", getItem(pos4).ISBN);
-                        object.put("Type", "Buy");
-                        object.put("Price", getItem(pos4).usedPrice);
-                        object.put("Earnings", getItem(pos4).usedPrice * .03);
-                        object.saveInBackground();
-                        ParseAnalytics.trackEvent("VitalSource.com");
-                        ParseAnalytics.trackEvent("Buy");
                         String link = getItem(pos4).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -526,25 +319,6 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "AbeBooks.com");
-
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-                        ParseObject object = new ParseObject("AbeBooks");
-                        object.put("ISBN", getItem(pos5).ISBN);
-                        object.put("Type", "Buy");
-                        object.put("Price", getItem(pos5).newPrice);
-                        object.put("Earnings", getItem(pos5).newPrice * .05);
-                        object.saveInBackground();
-                        ParseAnalytics.trackEvent("AbeBooks.com");
-                        ParseAnalytics.trackEvent("Buy");
                         String link = getItem(pos5).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -568,25 +342,6 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     @Override
                     public void onClick(View v) {
-                        ParseQuery<ParseObject> query = ParseQuery.getQuery("Retailer");
-                        query.whereEqualTo("name", "BiggerBooks.com");
-
-                        try {
-                            ParseObject object = query.getFirst();
-                            object.increment("timesSelected");
-                            object.saveInBackground();
-
-                        } catch (ParseException e) {
-
-                        }
-                        ParseObject object = new ParseObject("BiggerBooks");
-                        object.put("ISBN", getItem(pos6).ISBN);
-                        object.put("Type", "Buy");
-                        object.put("Price", getItem(pos6).usedPrice);
-                        object.put("Earnings", getItem(pos6).usedPrice * .05);
-                        object.saveInBackground();
-                        ParseAnalytics.trackEvent("BiggerBooks.com");
-                        ParseAnalytics.trackEvent("Buy");
                         String link = getItem(pos6).retailer.deepLink;
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW,uri);

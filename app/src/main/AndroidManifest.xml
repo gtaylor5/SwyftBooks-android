@@ -24,17 +24,8 @@
         android:theme="@style/AppTheme"
         android:name = "com.swyftlabs.swyftbooks.SwyftBooks">
 
-        <meta-data android:name="com.parse.push.gcm_sender_id"
-            android:value="id:1470629874245" />;
-
-        <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/pushlogo"/>
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
         <activity android:name=".LoginActivity"
-            android:windowSoftInputMode="adjustResize"
-            >
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,33 +35,6 @@
         <activity android:name=".SignUp" android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name=".HomeActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <service android:name="com.parse.PushService" />
-        <receiver android:name="com.parse.ParseBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.parse.ParsePushBroadcastReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.parse.push.intent.RECEIVE" />
-                <action android:name="com.parse.push.intent.DELETE" />
-                <action android:name="com.parse.push.intent.OPEN" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.parse.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <!--
-                  IMPORTANT: Change "com.parse.starter" to match your app's package name.
-                -->
-                <category android:name="com.swyftlabs.swyftbooks" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
