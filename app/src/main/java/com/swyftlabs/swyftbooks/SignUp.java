@@ -80,6 +80,7 @@ public class SignUp extends AppCompatActivity{
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful()){
                             showToast("There was an error signing you up. Please try again.", "long");
+                            return;
                         }
 
                         FirebaseUser user = mAuth.getCurrentUser();

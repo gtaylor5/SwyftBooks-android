@@ -19,10 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.parse.ParseAnalytics;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,8 +88,6 @@ class CustomListAdapter extends ArrayAdapter<Book>{
 
                     sell.setClickable(false);
                     sell.setAlpha(.25f);
-
-
                 }
 
                 rent.setText("Rent for: $"+String.format("%.2f",getItem(position).lowestPrice));

@@ -559,7 +559,7 @@ public class HomeActivity extends AppCompatActivity {
                 theBook.retailer.deepLink = getElementGenInfo(link,"DetailPageURL");
                 NodeList listPrice = xmlDoc.getElementsByTagName("ListPrice");
                 if(listPrice.getLength() != 0) {
-                    theBook.listPrice = new Double(getElement(listPrice, "Amount")[1] / 100);
+                    theBook.listPrice = new Double(getElement(listPrice, "Amount")[0] / 100);
                 }
                 NodeList newOffers = xmlDoc.getElementsByTagName("LowestNewPrice");
                 if(newOffers.getLength() != 0) {

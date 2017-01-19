@@ -107,7 +107,7 @@ public class Retailer implements Serializable {
 		params.put("Service", "AWSECommerceService");
 		params.put("AssociateTag", "swyftbooksapp-20");
 		params.put("Operation", "ItemLookup");
-		params.put("ResponseGroup", "Large");
+		params.put("ResponseGroup", "ItemAttributes,OfferSummary");
 		params.put("SearchIndex", "All");
 		params.put("ItemId", ISBN);
 		params.put("IdType", "ISBN");

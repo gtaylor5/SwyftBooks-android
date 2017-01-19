@@ -193,21 +193,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void createGuestLoginListener(){
 
-        guestLogin = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                int value = dataSnapshot.getValue(Integer.class);
-                value++;
-                ref.child("Guests").setValue(value);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        ref.child("Guests").addListenerForSingleValueEvent(guestLogin);
     }
 
     public void createSignUpListener(){
